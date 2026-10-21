@@ -857,8 +857,8 @@ When he asks you to send a message, write a clear subject and a short, friendly 
     <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
     <div class="ctr">
       <h2 class="a">It predicted it.</h2>
-      <p class="sub" style="max-width:1050px">Given the task and the list of tools, <b>find_contact</b> was simply the most likely next step. Same next-token prediction as always.</p>
-      <p class="sub frag" style="max-width:1050px">That works for short tasks. Longer ones need more.</p>
+      <p class="sub" style="max-width:1100px">From everything in the context: the task, the tool descriptions, and any skill it loaded. If a skill lists the steps, it follows them.</p>
+      <p class="sub frag" style="max-width:1100px">But what about a long task that no skill covers?</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
@@ -866,7 +866,7 @@ When he asks you to send a message, write a clear subject and a short, friendly 
   <section class="s">
     <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">A harder task</span></div>
     <div class="ctr">
-      <small class="kick">A harder task</small>
+      <small class="kick">A harder task, and no skill for it</small>
       <h2 class="a" style="font-size:72px;max-width:1350px">“Plan a farewell for Ayesha: find a day this week I’m free, invite the client team, and remind me to book a place the day before.”</h2>
       <p class="sub frag">Many steps, and the order matters. Inviting people before finding the day breaks everything after it.</p>
     </div>
@@ -905,6 +905,26 @@ write a short numbered plan.</div></div>
       <small class="kick">This has a name</small>
       <h2 class="word" style="font-size:150px;letter-spacing:-6px">This is planning.</h2>
       <p class="sub">Write the steps first, then follow them. Re-plan when a tool result changes things.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning &amp; planning</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">Is planning<br>a tool<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning &amp; planning</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">It can be either.</h2>
+      <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1200px">
+        <div class="frag"><code>Just text</code><span>The model writes the plan in its reply, and the same reply makes the first tool call. No extra tool needed.</span></div>
+        <div class="frag"><code>A plan tool</code><span>The model saves the plan with a tool, then ticks steps off and updates it as results come in. Coding agents work this way.</span></div>
+      </div>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
