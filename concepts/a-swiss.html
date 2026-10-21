@@ -531,6 +531,44 @@ while True:
   </section>
 
   <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Inside a tool</span></div>
+    <div class="ctr">
+      <h2 class="a">A tool is just a function.</h2>
+      <div class="pair2">
+        <div><small class="kick">What the model sees</small><div class="code">{
+  "name": "get_weather",
+  "description": "Current weather for a city",
+  "parameters": {
+    "city": "string"
+  }
+}</div></div>
+        <div class="frag"><small class="kick">What our code runs</small><div class="code">async function get_weather({ city }) {
+  const res = await fetch(
+    `https://wttr.in/${city}?format=j1`
+  );
+  return res.json();
+}</div></div>
+      </div>
+      <p class="sub frag">The model only sees the name, the description and the inputs. Inside, it can be any code you can write.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Inside a tool</span></div>
+    <div class="ctr">
+      <h2 class="a">So a tool can be anything.</h2>
+      <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1200px">
+        <div class="frag"><code>Read data</code><span>A database, files, a spreadsheet. Our demo’s list_contacts reads a JSON file.</span></div>
+        <div class="frag"><code>Call any API</code><span>Weather, maps, payments, GitHub, any public or third-party API.</span></div>
+        <div class="frag"><code>Take action</code><span>Send an email, post to Slack, book a meeting. Our send_email calls Resend’s API.</span></div>
+        <div class="frag"><code>Run code</code><span>A calculator, a Python script, a web search, even a browser.</span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
     <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Definition</span></div>
     <div class="g">
       <h2>Who decides the next step.</h2>
