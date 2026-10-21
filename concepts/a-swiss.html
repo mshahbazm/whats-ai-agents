@@ -172,6 +172,20 @@
   .mcp .servers div { background: #f4f4f4; padding: 18px 22px; }
   .mcp .servers b { display: block; font-size: 26px; font-weight: 700; letter-spacing: -.5px; }
   .mcp .servers small { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); }
+  #menu-btn { position: fixed; right: 18px; bottom: 16px; z-index: 20; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(0,0,0,.06); color: #555; font-size: 18px; cursor: pointer; opacity: .35; transition: opacity .2s; }
+  #menu-btn:hover { opacity: 1; }
+  #menu { position: fixed; inset: 0; z-index: 30; background: rgba(17,17,17,.35); display: none; }
+  #menu.open { display: block; }
+  #menu-panel { position: absolute; right: 0; top: 0; bottom: 0; width: min(460px, 92vw); background: #fff; display: flex; flex-direction: column; box-shadow: -12px 0 40px rgba(0,0,0,.12); font-family: 'Inter Tight', sans-serif; }
+  #menu-head { padding: 22px 26px 14px; font-weight: 800; font-size: 22px; letter-spacing: -.5px; }
+  #menu-head small { font: 500 12px 'IBM Plex Mono', monospace; color: var(--grey); margin-left: 8px; letter-spacing: 0; }
+  #menu-list { overflow-y: auto; padding: 0 14px 30px; }
+  #menu-list h4 { font: 500 12px 'IBM Plex Mono', monospace; color: var(--grey); margin: 18px 12px 6px; }
+  #menu-list button { display: flex; gap: 12px; width: 100%; text-align: left; border: 0; background: none; padding: 8px 12px; font: 500 15px 'Inter Tight', sans-serif; color: #222; cursor: pointer; border-radius: 6px; }
+  #menu-list button span { font: 500 12px 'IBM Plex Mono', monospace; color: var(--grey); min-width: 22px; padding-top: 2px; }
+  #menu-list button:hover { background: #f2f2f2; }
+  #menu-list button.now { background: #111; color: #fff; }
+  #menu-list button.now span { color: #bbb; }
 </style>
 </head>
 <body>
@@ -1065,6 +1079,8 @@ while True:
   </section>
 
 </div>
+<button id="menu-btn" aria-label="Slide menu" title="Slides (M)">☰</button>
+<div id="menu"><div id="menu-panel"><div id="menu-head">Slides <small>M to open · Esc to close</small></div><div id="menu-list"></div></div></div>
 <script>
   const st = document.getElementById('stage'), S = [...st.querySelectorAll('.s')]; let i = 0;
   const fit = () => { const k = Math.min(innerWidth / 1600, innerHeight / 900) * .98; st.style.transform = `translate(-50%,-50%) scale(${k})`; };
@@ -1077,7 +1093,41 @@ while True:
     sl.classList.toggle('done', !!last && last.classList.contains('end')); };
   const next = () => { const f = fr().find(e => !e.classList.contains('in')); f ? f.classList.add('in') : go(i + 1); sync(); };
   const prev = () => { const f = fr().filter(e => e.classList.contains('in')).pop(); f ? f.classList.remove('in') : (go(i - 1), fr().forEach(e => e.classList.add('in'))); sync(); };
-  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) next(); if (['ArrowLeft', 'PageUp'].includes(e.key)) prev(); });
+  // Slide menu: M or the corner button opens a list of every slide; click one to jump.
+  const menu = document.getElementById('menu'), list = document.getElementById('menu-list');
+  const title = sl => {
+    if (sl.querySelector('.trio')) return 'Large Language Model';
+    if (sl.classList.contains('live')) return 'The loop, running';
+    const h = sl.querySelector('h1.q, .ctr h2, h2, h1');
+    if (!h) return 'Slide';
+    const c = h.cloneNode(true);
+    c.querySelectorAll('br').forEach(b => b.replaceWith(' '));
+    return c.textContent.replace(/\s+/g, ' ').trim();
+  };
+  let lastPart = null;
+  list.innerHTML = S.map((sl, j) => {
+    const part = (sl.querySelector('.meta span') || {}).textContent || 'Building AI agents';
+    const head = part !== lastPart ? `<h4>${part}</h4>` : '';
+    lastPart = part;
+    return `${head}<button data-go="${j}"><span>${j + 1}</span>${title(sl)}</button>`;
+  }).join('');
+  const openMenu = on => {
+    menu.classList.toggle('open', on);
+    if (on) { list.querySelectorAll('button').forEach(b => b.classList.toggle('now', +b.dataset.go === i)); list.querySelector('.now')?.scrollIntoView({ block: 'center' }); }
+  };
+  list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { go(+b.dataset.go); sync(); openMenu(false); } });
+  document.getElementById('menu-btn').addEventListener('click', () => openMenu(!menu.classList.contains('open')));
+  menu.addEventListener('click', e => { if (e.target === menu) openMenu(false); });
+
+  addEventListener('keydown', e => {
+    if (e.key === 'm' || e.key === 'M') return openMenu(!menu.classList.contains('open'));
+    if (e.key === 'Escape') return openMenu(false);
+    if (menu.classList.contains('open')) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) next();
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) prev();
+    if (e.key === 'Home') { go(0); sync(); }
+    if (e.key === 'End') { go(S.length - 1); sync(); }
+  });
   st.addEventListener('click', next);
   fit(); go((parseInt(location.hash.slice(1)) || 1) - 1);
 </script>
