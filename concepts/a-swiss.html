@@ -159,6 +159,11 @@
   .code.unroll { font-size: 24px; padding: 26px 40px; margin-top: 40px; }
   .unroll .blk { display: block; }
   .unroll .blk + .blk { margin-top: 14px; }
+  .react { margin-top: 56px; width: 1100px; text-align: left; }
+  .react > div { display: grid; grid-template-columns: 220px 1fr; gap: 24px; padding: 14px 0; align-items: baseline; }
+  .react b { font: 500 18px 'IBM Plex Mono', monospace; color: var(--grey); }
+  .react span { font-size: 30px; font-weight: 600; letter-spacing: -.6px; }
+  .react code { font: 500 26px 'IBM Plex Mono', monospace; color: var(--red); }
 </style>
 </head>
 <body>
@@ -564,6 +569,295 @@ while True:
         <div class="frag"><code>Take action</code><span>Send an email, post to Slack, book a meeting. Our send_email calls Resend’s API.</span></div>
         <div class="frag"><code>Run code</code><span>A calculator, a Python script, a web search, even a browser.</span></div>
       </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Live demo</span></div>
+    <div class="ctr">
+      <small class="kick">Live demo</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">Let’s see it run.</h2>
+      <p class="sub">An assistant with eight tools: contacts, email, to-dos and reminders. Every tool call shows up as it happens.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">Why did<br>it forget<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">Every call starts blank.</h2>
+      <div class="pair2">
+        <div><small class="kick">Call 1</small><div class="code">llm([
+  "Email Haris happy birthday"
+])
+<span class="c"># → sends the email</span></div></div>
+        <div class="frag"><small class="kick">Call 2</small><div class="code">llm([
+  "What did you just send Haris?"
+])
+<span class="r"># → "I don't know"</span></div></div>
+      </div>
+      <p class="sub frag">Call 2 never sees call 1. The model keeps nothing between calls.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">So how does ChatGPT<br>remember your chat<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">We send the whole chat again.</h2>
+      <div class="code big">messages = []
+
+while True:
+    messages.append(user_input())
+<span class="r">    reply = llm(messages)            # the full list, every time</span>
+    messages.append(reply)</div>
+      <p class="sub frag">The model still remembers nothing. Our code keeps the list and resends it on every call.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">The cost</span></div>
+    <div class="ctr">
+      <h2 class="a">The list keeps growing.</h2>
+      <div class="tools">
+        <div class="frag"><code>Slower, costlier</code><span>You pay per token, and every call resends everything so far.</span></div>
+        <div class="frag"><code>It has a limit</code><span>Each model can only read so many tokens at once.</span></div>
+        <div class="frag"><code>So we trim it</code><span>Drop the oldest messages, or replace them with a short summary.</span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-6px">Short-term memory.</h2>
+      <p class="sub">The conversation so far, resent with every call. When the chat ends, it’s gone.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">How did it know it was<br>my assistant<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">We tell it, on every call.</h2>
+      <div class="code big" style="font-size:24px;max-width:1150px;white-space:pre-wrap">You are Shahbaz's personal assistant.
+
+You can look up his contacts, send emails on his behalf, and manage his to-do list and reminders using your tools.
+
+When he asks you to send a message, write a clear subject and a short, friendly body in his voice, and sign it as Shahbaz.</div>
+      <p class="sub frag">This is the system prompt: sent first, before the chat. It gives the agent its job, its tone and its rules.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">What should it remember<br>next week<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">Save it somewhere, with a tool.</h2>
+      <div class="pair2">
+        <div><small class="kick">Monday</small><div class="code">add_todo("Renew domain")
+<span class="c"># → saved to storage</span></div></div>
+        <div class="frag"><small class="kick">Friday, a brand new chat</small><div class="code">list_todos()
+<span class="r"># → ["Renew domain"]</span></div></div>
+      </div>
+      <p class="sub frag">The chat is new, but the data is still there. The model reads it back with a tool.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name too</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-6px">Long-term memory.</h2>
+      <p class="sub">Facts stored outside the model: a database, files, even the browser. Our demo saves to-dos in the browser when Memory is on.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Putting it together</span></div>
+    <div class="ctr">
+      <h2 class="a" style="font-size:80px">The model only knows what’s in the call.</h2>
+      <div class="tools" style="grid-template-columns:repeat(4,1fr);width:1400px">
+        <div class="frag"><code>Instructions</code><span>The system prompt</span></div>
+        <div class="frag"><code>Conversation</code><span>Short-term memory</span></div>
+        <div class="frag"><code>Saved facts</code><span>Long-term memory, read with tools</span></div>
+        <div class="frag"><code>Tool results</code><span>What each tool sent back</span></div>
+      </div>
+      <p class="sub frag">All of this together is called the context. Building an agent is mostly deciding what goes into it.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">How did it know which<br>tool to call first<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">It predicted it.</h2>
+      <p class="sub" style="max-width:1050px">Given the task and the list of tools, <b>find_contact</b> was simply the most likely next step. Same next-token prediction as always.</p>
+      <p class="sub frag" style="max-width:1050px">That works for short tasks. Longer ones need more.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">A harder task</span></div>
+    <div class="ctr">
+      <small class="kick">A harder task</small>
+      <h2 class="a" style="font-size:72px;max-width:1350px">“Plan a farewell for Ayesha: find a day this week I’m free, invite the client team, and remind me to book a place the day before.”</h2>
+      <p class="sub frag">Many steps, and the order matters. Inviting people before finding the day breaks everything after it.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">What if it just starts<br>calling tools<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">Ask it to plan first.</h2>
+      <div class="pair2">
+        <div><small class="kick">One line in the system prompt</small><div class="code">Before using any tools,
+write a short numbered plan.</div></div>
+        <div class="frag"><small class="kick">The model writes</small><div class="code">1. get_today
+2. list_reminders → find a free day
+3. list_contacts → the client team
+4. send_email to each of them
+5. add_reminder the day before</div></div>
+      </div>
+      <p class="sub frag">The plan stays in the context, so every next step can look back at it.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-6px">This is planning.</h2>
+      <p class="sub">Write the steps first, then follow them. Re-plan when a tool result changes things.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">The pattern</span></div>
+    <div class="ctr">
+      <h2 class="a">Think. Act. Look. Repeat.</h2>
+      <div class="react">
+        <div class="frag"><b>Thought</b><span>I need the client team’s emails.</span></div>
+        <div class="frag"><b>Action</b><code>list_contacts()</code></div>
+        <div class="frag"><b>Observation</b><span>Ayesha, Sara and Bilal work on client projects.</span></div>
+        <div class="frag"><b>Thought</b><span>Now I can email each of them.</span></div>
+        <div class="frag"><b>Action</b><code>send_email("sara-demo@yopmail.com", …)</code></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name too</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-6px">This is ReAct.</h2>
+      <p class="sub">Reason, then Act, then look at the result. It’s the agent loop from earlier, with the thinking written out.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">Doesn’t the model<br>already think<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">Reasoning models think first.</h2>
+      <p class="sub" style="max-width:1050px">Some models write a hidden chain of thought before they answer. Our demo uses one. You choose how hard it thinks:</p>
+      <div class="code mid frag">client.responses.create({
+  model,
+  reasoning: { effort: "high" },   <span class="c">// low · medium · high</span>
+  ...
+})</div>
+      <p class="sub frag" style="max-width:1050px">More thinking is more accurate on hard tasks, but slower and more expensive.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">When unsure</span></div>
+    <div class="ctr">
+      <small class="kick">“Email Haris happy birthday.” But there are two.</small>
+      <h2 class="a">A good agent asks.</h2>
+      <div class="pair2">
+        <div><small class="kick">Guessing</small><div class="code"><span class="r">send_email("haris-ali@…")</span>
+<span class="c"># the wrong Haris</span></div></div>
+        <div class="frag"><small class="kick">Asking</small><div class="code">"Haris Ahmed or Haris Ali?"</div></div>
+      </div>
+      <p class="sub frag">Asking costs one message. Guessing wrong can send a real email to the wrong person.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Putting it together</span></div>
+    <div class="ctr">
+      <h2 class="a">Still next-token prediction.</h2>
+      <p class="sub" style="max-width:1100px">Plans, thoughts and questions are all text the model writes. That text goes into the context and shapes what it predicts next.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
