@@ -42,7 +42,7 @@ export const toolDefinitions: OpenAI.Responses.FunctionTool[] = [
     type: "function",
     strict: false,
     name: "send_email",
-    description: "Send an email from Shahbaz.",
+    description: "Send an email from Shahbaz to someone in his contact list.",
     parameters: {
       type: "object",
       properties: {
@@ -132,6 +132,11 @@ const tools: Record<string, (args: Args) => Promise<unknown>> = {
   },
 
   async send_email({ to, subject, body }) {
+    // Only ever email people in the contact list, whatever the model asks for.
+    const contacts = await load<Contact>("contacts");
+    if (!contacts.some((c) => c.email.toLowerCase() === String(to).trim().toLowerCase())) {
+      return { error: `Not sent: ${to} is not in the contact list.` };
+    }
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: process.env.FROM_ADDRESS!,
