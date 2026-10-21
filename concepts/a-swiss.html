@@ -582,21 +582,38 @@ while True:
   </section>
 
   <section class="s">
-    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Look up later</span></div>
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
     <div class="ctr">
-      <small class="kick">Worth looking up later</small>
-      <h2 class="a">MCP: tools someone already built.</h2>
+      <h1 class="q">Do we write every<br>tool ourselves<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">Plug in tools someone already built.</h2>
       <div class="mcp">
         <div class="agent">Our agent</div>
         <div class="wire"><span>MCP</span></div>
         <div class="servers">
-          <div><b>Gmail</b><small>send_email, search_inbox</small></div>
-          <div><b>GitHub</b><small>create_issue, read_file</small></div>
-          <div><b>Calendar</b><small>list_events, book_slot</small></div>
-          <div><b>Notion</b><small>search_pages, add_page</small></div>
+          <div class="frag"><b>Gmail</b><small>send_email, search_inbox</small></div>
+          <div class="frag"><b>GitHub</b><small>create_issue, read_file</small></div>
+          <div class="frag"><b>Calendar</b><small>list_events, book_slot</small></div>
+          <div class="frag"><b>Notion</b><small>search_pages, add_page</small></div>
         </div>
       </div>
-      <p class="sub">Model Context Protocol: one standard plug, so any agent can use tools from Gmail, GitHub and more, without writing them yourself.</p>
+      <p class="sub frag">Each one is a server that hands the agent its tools: names, descriptions, inputs, and the code behind them.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">This is MCP.</h2>
+      <p class="sub">Model Context Protocol: one standard plug for tools. Write a tool once, and any agent that speaks MCP can use it.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
