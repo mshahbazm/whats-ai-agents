@@ -1,22 +1,29 @@
-import { runAgent, type ChatMessage } from "@/lib/agent";
+import { runAgent } from "@/lib/agent";
+import { isAuthorized, unauthorized } from "@/lib/auth";
+import { createStore, loadChat, saveChat } from "@/lib/store";
 
 export async function POST(request: Request) {
-  const { messages } = (await request.json()) as { messages: ChatMessage[] };
+  if (!isAuthorized(request)) return unauthorized();
 
-  // By default every request starts blank: the model only sees the latest
-  // message. This is on purpose for the lecture (it shows why agents need
-  // memory). Set REMEMBER_CONVERSATION=true to send the whole chat.
-  const remember = process.env.REMEMBER_CONVERSATION === "true";
-  const history = remember
-    ? messages
-    : messages.filter((m) => m.role === "user").slice(-1);
+  const { message, memory } = (await request.json()) as { message: string; memory: boolean };
+
+  // Memory off: the model only ever sees this one message.
+  // Memory on: we load the saved conversation from storage and send it all.
+  // The model itself never remembers anything; we resend the history each time.
+  const history = [...(memory ? await loadChat() : []), { role: "user" as const, content: message }];
+  const store = createStore(memory);
 
   // Stream one JSON event per line so the UI can show each tool call live.
   const stream = new ReadableStream({
     async start(controller) {
       const send = (event: unknown) => controller.enqueue(new TextEncoder().encode(JSON.stringify(event) + "\n"));
       try {
-        for await (const event of runAgent(history)) send(event);
+        for await (const event of runAgent(history, store)) {
+          send(event);
+          if (memory && event.type === "text") {
+            await saveChat([...history, { role: "assistant", content: event.text }]);
+          }
+        }
       } catch (err) {
         send({ type: "error", message: err instanceof Error ? err.message : String(err) });
       }

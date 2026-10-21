@@ -1,19 +1,6 @@
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
 import type OpenAI from "openai";
 import { Resend } from "resend";
-
-// The JSON files in /data act as our "API". Swapping them for a real
-// contacts service or database would not change anything the model sees.
-const dataFile = (name: string) => path.join(process.cwd(), "data", `${name}.json`);
-
-async function load<T>(name: string): Promise<T[]> {
-  return JSON.parse(await readFile(dataFile(name), "utf8"));
-}
-
-async function save<T>(name: string, rows: T[]) {
-  await writeFile(dataFile(name), JSON.stringify(rows, null, 2) + "\n");
-}
+import type { Store } from "./store";
 
 type Contact = { id: number; name: string; email: string; birthday: string; note: string };
 type Todo = { id: number; title: string; due: string | null; done: boolean };
@@ -115,7 +102,7 @@ export const toolDefinitions: OpenAI.Responses.FunctionTool[] = [
 
 type Args = Record<string, unknown>;
 
-const tools: Record<string, (args: Args) => Promise<unknown>> = {
+const tools: Record<string, (args: Args, store: Store) => Promise<unknown>> = {
   async get_today() {
     const timeZone = process.env.TIMEZONE || "Asia/Karachi";
     const now = new Date();
@@ -127,13 +114,13 @@ const tools: Record<string, (args: Args) => Promise<unknown>> = {
     };
   },
 
-  async list_contacts() {
-    return load<Contact>("contacts");
+  async list_contacts(_args, store) {
+    return store.load<Contact>("contacts");
   },
 
-  async send_email({ to, subject, body }) {
+  async send_email({ to, subject, body }, store) {
     // Only ever email people in the contact list, whatever the model asks for.
-    const contacts = await load<Contact>("contacts");
+    const contacts = await store.load<Contact>("contacts");
     if (!contacts.some((c) => c.email.toLowerCase() === String(to).trim().toLowerCase())) {
       return { error: `Not sent: ${to} is not in the contact list.` };
     }
@@ -148,45 +135,45 @@ const tools: Record<string, (args: Args) => Promise<unknown>> = {
     return { sent: true, id: data?.id, to };
   },
 
-  async list_todos({ status = "pending" }) {
-    const todos = await load<Todo>("todos");
+  async list_todos({ status = "pending" }, store) {
+    const todos = await store.load<Todo>("todos");
     if (status === "all") return todos;
     return todos.filter((t) => t.done === (status === "done"));
   },
 
-  async add_todo({ title, due }) {
-    const todos = await load<Todo>("todos");
+  async add_todo({ title, due }, store) {
+    const todos = await store.load<Todo>("todos");
     const todo: Todo = { id: nextId(todos), title: String(title), due: due ? String(due) : null, done: false };
-    await save("todos", [...todos, todo]);
+    await store.save("todos", [...todos, todo]);
     return todo;
   },
 
-  async complete_todo({ id }) {
-    const todos = await load<Todo>("todos");
+  async complete_todo({ id }, store) {
+    const todos = await store.load<Todo>("todos");
     const todo = todos.find((t) => t.id === Number(id));
     if (!todo) return { error: `No to-do with id ${id}` };
     todo.done = true;
-    await save("todos", todos);
+    await store.save("todos", todos);
     return todo;
   },
 
-  async list_reminders() {
-    return load<Reminder>("reminders");
+  async list_reminders(_args, store) {
+    return store.load<Reminder>("reminders");
   },
 
-  async add_reminder({ text, remind_at }) {
-    const reminders = await load<Reminder>("reminders");
+  async add_reminder({ text, remind_at }, store) {
+    const reminders = await store.load<Reminder>("reminders");
     const reminder: Reminder = { id: nextId(reminders), text: String(text), remind_at: String(remind_at) };
-    await save("reminders", [...reminders, reminder]);
+    await store.save("reminders", [...reminders, reminder]);
     return reminder;
   },
 };
 
-export async function runTool(name: string, args: Args): Promise<unknown> {
+export async function runTool(name: string, args: Args, store: Store): Promise<unknown> {
   const tool = tools[name];
   if (!tool) return { error: `Unknown tool: ${name}` };
   try {
-    return await tool(args);
+    return await tool(args, store);
   } catch (err) {
     return { error: err instanceof Error ? err.message : String(err) };
   }

@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import type { ChatTurn, Store } from "./store";
 import { runTool, toolDefinitions } from "./tools";
 
 export const SYSTEM_PROMPT = `You are Shahbaz's personal assistant.
@@ -13,12 +14,11 @@ export type AgentEvent =
   | { type: "text"; text: string }
   | { type: "error"; message: string };
 
-export type ChatMessage = { role: "user" | "assistant"; content: string };
 
 // The agentic loop from the slides:
 // ask the model, run any tools it asks for, send the results back, repeat
 // until it replies without a tool call.
-export async function* runAgent(history: ChatMessage[]): AsyncGenerator<AgentEvent> {
+export async function* runAgent(history: ChatTurn[], store: Store): AsyncGenerator<AgentEvent> {
   const client = new OpenAI();
   const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";
   const maxSteps = Number(process.env.MAX_STEPS || 8);
@@ -48,7 +48,7 @@ export async function* runAgent(history: ChatMessage[]): AsyncGenerator<AgentEve
       console.log(`[step ${step}] ${call.name}(${JSON.stringify(args)})`);
       yield { type: "tool-call", id: call.call_id, name: call.name, args };
 
-      const result = await runTool(call.name, args);
+      const result = await runTool(call.name, args, store);
       yield { type: "tool-result", id: call.call_id, result };
       input.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify(result) });
     }
