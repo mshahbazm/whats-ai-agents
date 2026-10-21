@@ -1078,6 +1078,84 @@ while True:
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
 
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">06 — Frameworks</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">Do you write this loop<br>yourself every time<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">06 — Frameworks</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">No. A framework gives you the loop.</h2>
+      <div class="tools" style="grid-template-columns:repeat(3,1fr);width:1350px">
+        <div class="frag"><code>The loop</code><span>Calls the model, runs the tools, sends results back.</span></div>
+        <div class="frag"><code>Memory</code><span>Keeps the chat history and sessions for you.</span></div>
+        <div class="frag"><code>Streaming</code><span>Shows each step as it happens, like our tool cards.</span></div>
+        <div class="frag"><code>Tracing</code><span>Records every step, so you can see what went wrong.</span></div>
+        <div class="frag"><code>Retries</code><span>Recovers when a model call or tool fails.</span></div>
+        <div class="frag"><code>Many agents</code><span>Lets one agent hand a task to another.</span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">06 — Frameworks</span><span style="grid-column:9/span 4;text-align:right">Less code</span></div>
+    <div class="ctr">
+      <h2 class="a">Same agent, much less code.</h2>
+      <div class="pair2">
+        <div><small class="kick">By hand, like our demo</small><div class="code">for step in range(MAX_STEPS):
+    response = client.responses.create(
+        model=model, input=messages,
+        tools=tool_definitions)
+    messages += response.output
+    calls = [o for o in response.output
+             if o.type == "function_call"]
+    if not calls:
+        return response.output_text
+    for call in calls:
+        result = run_tool(call)
+        messages.append(result)</div></div>
+        <div class="frag"><small class="kick">With a framework (OpenAI Agents SDK)</small><div class="code">from agents import Agent, Runner
+
+agent = Agent(
+    name="Assistant",
+    instructions=SYSTEM_PROMPT,
+    tools=[list_contacts, send_email],
+)
+
+result = Runner.run_sync(
+    agent, "Email Haris happy birthday")</div></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">06 — Frameworks</span><span style="grid-column:9/span 4;text-align:right">The options</span></div>
+    <div class="ctr">
+      <h2 class="a">Two kinds of frameworks.</h2>
+      <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1300px">
+        <div class="frag"><code>Agent SDKs</code><span>They run the loop for you. You give them a model, instructions and tools.<br><br><b>OpenAI Agents SDK · Vercel AI SDK · Claude Agent SDK · Pi</b></span></div>
+        <div class="frag"><code>Graph frameworks</code><span>You draw the steps as a graph. Good for mixing fixed workflow steps with agent steps.<br><br><b>LangGraph</b></span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">06 — Frameworks</span><span style="grid-column:9/span 4;text-align:right">Should you use one</span></div>
+    <div class="ctr">
+      <h2 class="a">Learn the loop first.</h2>
+      <p class="sub" style="max-width:1100px">Build it by hand once, like today. Reach for a framework when you need tracing, memory or several agents working together.</p>
+      <p class="sub frag" style="max-width:1100px">Whichever you pick, underneath it’s the same loop: call the model, run the tools, repeat.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
 </div>
 <button id="menu-btn" aria-label="Slide menu" title="Slides (M)">☰</button>
 <div id="menu"><div id="menu-panel"><div id="menu-head">Slides <small>M to open · Esc to close</small></div><div id="menu-list"></div></div></div>
