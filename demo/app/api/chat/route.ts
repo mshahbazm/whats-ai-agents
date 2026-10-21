@@ -1,7 +1,4 @@
-import type OpenAI from "openai";
-import { runAgent } from "@/lib/agent";
-
-type ChatMessage = { role: "user" | "assistant"; content: string };
+import { runAgent, type ChatMessage } from "@/lib/agent";
 
 export async function POST(request: Request) {
   const { messages } = (await request.json()) as { messages: ChatMessage[] };
@@ -10,7 +7,7 @@ export async function POST(request: Request) {
   // message. This is on purpose for the lecture (it shows why agents need
   // memory). Set REMEMBER_CONVERSATION=true to send the whole chat.
   const remember = process.env.REMEMBER_CONVERSATION === "true";
-  const history: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = remember
+  const history = remember
     ? messages
     : messages.filter((m) => m.role === "user").slice(-1);
 

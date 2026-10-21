@@ -13,38 +13,44 @@ export type AgentEvent =
   | { type: "text"; text: string }
   | { type: "error"; message: string };
 
-type Message = OpenAI.Chat.Completions.ChatCompletionMessageParam;
+export type ChatMessage = { role: "user" | "assistant"; content: string };
 
 // The agentic loop from the slides:
 // ask the model, run any tools it asks for, send the results back, repeat
 // until it replies without a tool call.
-export async function* runAgent(history: Message[]): AsyncGenerator<AgentEvent> {
+export async function* runAgent(history: ChatMessage[]): AsyncGenerator<AgentEvent> {
   const client = new OpenAI();
   const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";
   const maxSteps = Number(process.env.MAX_STEPS || 8);
-  const messages: Message[] = [{ role: "system", content: SYSTEM_PROMPT }, ...history];
+  const input: OpenAI.Responses.ResponseInput = [...history];
 
   for (let step = 1; step <= maxSteps; step++) {
-    const response = await client.chat.completions.create({ model, messages, tools: toolDefinitions });
-    const reply = response.choices[0].message;
-    messages.push(reply);
+    const response = await client.responses.create({
+      model,
+      instructions: SYSTEM_PROMPT,
+      input,
+      tools: toolDefinitions,
+    });
+    // Keep everything the model produced (reasoning, tool calls, text) for the next turn.
+    input.push(...(response.output as OpenAI.Responses.ResponseInputItem[]));
+
+    const calls = response.output.filter((item) => item.type === "function_call");
 
     // No tool calls: the model is done.
-    if (!reply.tool_calls?.length) {
+    if (calls.length === 0) {
       console.log(`[step ${step}] final answer`);
-      yield { type: "text", text: reply.content ?? "" };
+      yield { type: "text", text: response.output_text };
       return;
     }
 
-    for (const call of reply.tool_calls) {
-      if (call.type !== "function") continue;
-      const args = JSON.parse(call.function.arguments || "{}");
-      console.log(`[step ${step}] ${call.function.name}(${JSON.stringify(args)})`);
-      yield { type: "tool-call", id: call.id, name: call.function.name, args };
+    for (const call of calls) {
+      const args = JSON.parse(call.arguments || "{}");
+      console.log(`[step ${step}] ${call.name}(${JSON.stringify(args)})`);
+      yield { type: "tool-call", id: call.call_id, name: call.name, args };
 
-      const result = await runTool(call.function.name, args);
-      yield { type: "tool-result", id: call.id, result };
-      messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(result) });
+      const result = await runTool(call.name, args);
+      yield { type: "tool-result", id: call.call_id, result };
+      input.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify(result) });
     }
   }
 

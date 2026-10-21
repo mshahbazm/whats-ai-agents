@@ -23,100 +23,92 @@ const nextId = (rows: { id: number }[]) => Math.max(0, ...rows.map((r) => r.id))
 
 // What the model is told about each tool. The model never runs these;
 // it only asks for them by name, and our code below does the work.
-export const toolDefinitions: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+export const toolDefinitions: OpenAI.Responses.FunctionTool[] = [
   {
     type: "function",
-    function: {
-      name: "get_today",
-      description: "Get the current date, weekday and time.",
-      parameters: { type: "object", properties: {} },
+    strict: false,
+    name: "get_today",
+    description: "Get the current date, weekday and time.",
+    parameters: { type: "object", properties: {} },
+  },
+  {
+    type: "function",
+    strict: false,
+    name: "list_contacts",
+    description: "List all of Shahbaz's contacts with their email, birthday (MM-DD) and a short note.",
+    parameters: { type: "object", properties: {} },
+  },
+  {
+    type: "function",
+    strict: false,
+    name: "send_email",
+    description: "Send an email from Shahbaz.",
+    parameters: {
+      type: "object",
+      properties: {
+        to: { type: "string", description: "Recipient email address" },
+        subject: { type: "string" },
+        body: { type: "string", description: "Plain-text body" },
+      },
+      required: ["to", "subject", "body"],
     },
   },
   {
     type: "function",
-    function: {
-      name: "list_contacts",
-      description: "List all of Shahbaz's contacts with their email, birthday (MM-DD) and a short note.",
-      parameters: { type: "object", properties: {} },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "send_email",
-      description: "Send an email from Shahbaz.",
-      parameters: {
-        type: "object",
-        properties: {
-          to: { type: "string", description: "Recipient email address" },
-          subject: { type: "string" },
-          body: { type: "string", description: "Plain-text body" },
-        },
-        required: ["to", "subject", "body"],
+    strict: false,
+    name: "list_todos",
+    description: "List to-do items.",
+    parameters: {
+      type: "object",
+      properties: {
+        status: { type: "string", enum: ["pending", "done", "all"], description: "Defaults to pending" },
       },
     },
   },
   {
     type: "function",
-    function: {
-      name: "list_todos",
-      description: "List to-do items.",
-      parameters: {
-        type: "object",
-        properties: {
-          status: { type: "string", enum: ["pending", "done", "all"], description: "Defaults to pending" },
-        },
+    strict: false,
+    name: "add_todo",
+    description: "Add a to-do item.",
+    parameters: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        due: { type: "string", description: "Due date as YYYY-MM-DD, optional" },
       },
+      required: ["title"],
     },
   },
   {
     type: "function",
-    function: {
-      name: "add_todo",
-      description: "Add a to-do item.",
-      parameters: {
-        type: "object",
-        properties: {
-          title: { type: "string" },
-          due: { type: "string", description: "Due date as YYYY-MM-DD, optional" },
-        },
-        required: ["title"],
-      },
+    strict: false,
+    name: "complete_todo",
+    description: "Mark a to-do item as done.",
+    parameters: {
+      type: "object",
+      properties: { id: { type: "number" } },
+      required: ["id"],
     },
   },
   {
     type: "function",
-    function: {
-      name: "complete_todo",
-      description: "Mark a to-do item as done.",
-      parameters: {
-        type: "object",
-        properties: { id: { type: "number" } },
-        required: ["id"],
-      },
-    },
+    strict: false,
+    name: "list_reminders",
+    description: "List reminders.",
+    parameters: { type: "object", properties: {} },
   },
   {
     type: "function",
-    function: {
-      name: "list_reminders",
-      description: "List reminders.",
-      parameters: { type: "object", properties: {} },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "add_reminder",
-      description: "Add a reminder.",
-      parameters: {
-        type: "object",
-        properties: {
-          text: { type: "string" },
-          remind_at: { type: "string", description: "Local date and time as YYYY-MM-DDTHH:mm" },
-        },
-        required: ["text", "remind_at"],
+    strict: false,
+    name: "add_reminder",
+    description: "Add a reminder.",
+    parameters: {
+      type: "object",
+      properties: {
+        text: { type: "string" },
+        remind_at: { type: "string", description: "Local date and time as YYYY-MM-DDTHH:mm" },
       },
+      required: ["text", "remind_at"],
     },
   },
 ];
