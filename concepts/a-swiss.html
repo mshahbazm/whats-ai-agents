@@ -945,11 +945,29 @@ write a short numbered plan.</div></div>
   </section>
 
   <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning &amp; planning</span><span style="grid-column:9/span 4;text-align:right">The pattern</span></div>
+    <div class="ctr">
+      <small class="kick">The agent loop from earlier, one line added</small>
+      <h2 class="a">Same loop. It explains itself first.</h2>
+      <div class="code big" style="font-size:22px;padding:24px 36px;margin-top:36px">messages = [task]
+while True:
+    reply = model(messages, tools)
+<span class="r">    print(reply.thought)        # why it's doing the next step</span>
+    if not reply.tool_calls:
+        return reply.text
+    result = run(reply.tool_calls)
+    messages += [reply, result]</div>
+      <p class="sub frag">The thought goes back into messages too, so the next step can build on it.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
     <div class="meta"><span style="grid-column:1/span 4">05 — Reasoning & planning</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
     <div class="ctr">
       <small class="kick">This has a name too</small>
       <h2 class="word" style="font-size:150px;letter-spacing:-6px">This is ReAct.</h2>
-      <p class="sub">Reason, then Act, then look at the result. It’s the agent loop from earlier, with the thinking written out.</p>
+      <p class="sub">Reason + Act: the agent loop you already know, with a thought before every step. Reasoning models now do the thinking part on their own.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
