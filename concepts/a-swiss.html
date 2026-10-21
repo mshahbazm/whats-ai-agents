@@ -634,14 +634,69 @@ while True:
   </section>
 
   <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-6px">Short-term memory.</h2>
+      <p class="sub">The conversation so far, resent with every call. When the chat ends, it’s gone.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
     <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">The cost</span></div>
     <div class="ctr">
       <h2 class="a">The list keeps growing.</h2>
-      <div class="tools">
+      <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1100px">
         <div class="frag"><code>Slower, costlier</code><span>You pay per token, and every call resends everything so far.</span></div>
         <div class="frag"><code>It has a limit</code><span>Each model can only read so many tokens at once.</span></div>
-        <div class="frag"><code>So we trim it</code><span>Drop the oldest messages, or replace them with a short summary.</span></div>
       </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">So what do<br>we keep<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Shrinking it</span></div>
+    <div class="ctr">
+      <h2 class="a">Two ways to shrink it.</h2>
+      <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1200px">
+        <div class="frag"><code>Trim</code><span>Drop the oldest messages. Simple, but whatever was in them is gone.</span></div>
+        <div class="frag"><code>Summarise</code><span>Ask the model to write a short summary of the old messages, keeping only what matters, and send that instead.</span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Shrinking it</span></div>
+    <div class="ctr">
+      <h2 class="a">Keep what matters, drop the rest.</h2>
+      <div class="pair2">
+        <div><small class="kick">Before: 40 messages</small><div class="code">user: hi
+assistant: Hi! How can I help?
+user: plan a farewell for Ayesha
+assistant: Sure. Which day?
+user: friday, she likes chai
+assistant: Noted.
+...
+<span class="c">(34 more messages)</span></div></div>
+        <div class="frag"><small class="kick">After: a summary + the last few</small><div class="code"><span class="r">Summary: Planning Ayesha's farewell
+on Friday. She likes chai. Invites
+sent to Sara and Bilal. Still to do:
+book a place.</span>
+
+user: book the café near the office
+assistant: ...</div></div>
+      </div>
+      <p class="sub frag">The summary keeps decisions, facts and open tasks. Greetings and small talk are dropped.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
@@ -650,8 +705,8 @@ while True:
     <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
     <div class="ctr">
       <small class="kick">This has a name</small>
-      <h2 class="word" style="font-size:150px;letter-spacing:-6px">Short-term memory.</h2>
-      <p class="sub">The conversation so far, resent with every call. When the chat ends, it’s gone.</p>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">This is compaction.</h2>
+      <p class="sub">A selective summary of the conversation so far, done automatically when the chat gets too long. Many agents do this in long sessions.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
@@ -673,7 +728,17 @@ while True:
 You can look up his contacts, send emails on his behalf, and manage his to-do list and reminders using your tools.
 
 When he asks you to send a message, write a clear subject and a short, friendly body in his voice, and sign it as Shahbaz.</div>
-      <p class="sub frag">This is the system prompt: sent first, before the chat. It gives the agent its job, its tone and its rules.</p>
+
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">The system prompt.</h2>
+      <p class="sub">Sent first, before the chat, on every single call. It gives the agent its job, its tone and its rules.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
