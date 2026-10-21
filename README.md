@@ -50,14 +50,14 @@ Open <http://localhost:3000> and enter your `DEMO_PASSWORD`.
 
 `.env.local` is gitignored. Only `.env.example` is committed.
 
-### Memory switch
+### Memory switches
 
-The chat header has a **Memory** switch, off by default. Chats themselves are never stored: the agent only ever sees the message you just sent.
+The chat header has two switches, both off by default. Chats are never stored on the server.
 
-- **Off:** nothing is saved. Add a to-do or reminder, ask again (or refresh), and it's gone.
-- **On:** to-do and reminder changes are saved in your browser (localStorage) and are still there on the next message or after a refresh. **Forget everything** clears them.
+- **Chat history** (short-term memory): off, only your newest message is sent, so the agent forgets everything you said before. On, every message in this browser tab is sent again with each new one.
+- **Long-term memory**: off, nothing is saved, so an added to-do or reminder is gone on the next message. On, to-dos and reminders are saved in your browser (localStorage) and survive a refresh. **Forget everything** clears them.
 
-The server keeps nothing. With memory on, the browser sends its saved to-dos and reminders along with each message, the tools work on that copy, and the server sends the updated copy back for the browser to save.
+The server keeps nothing. With long-term memory on, the browser sends its saved to-dos and reminders along with each message, the tools work on that copy, and the server sends the updated copy back for the browser to save.
 
 ### How it works
 
@@ -81,8 +81,8 @@ The server terminal also logs each step (`[step 2] send_email({...})`), which is
 - "Email Haris and wish him a happy birthday."
 - "Whose birthday is this week? Send each of them a birthday email."
 - "Remind me to call Ayesha tomorrow at 11am."
-- Then: "What did you just send Haris?" It has no idea, because chats are never stored. This is where the memory part of the lecture begins.
-- Memory: add a to-do, then ask for your to-dos again. With memory off it's gone; switch memory on and it stays.
+- Then: "What did you just send Haris?" With chat history off it has no idea. Switch chat history on and ask again.
+- Long-term memory: add a to-do and refresh. With long-term memory off it's gone; switch it on and it stays.
 
 Emails to `*@yopmail.com` can be read at `https://yopmail.com/<name>`, for example <https://yopmail.com/haris-demo>.
 

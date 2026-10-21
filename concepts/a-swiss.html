@@ -862,55 +862,6 @@ write a short numbered plan.</div></div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
 
-  <section class="s">
-    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Definition</span></div>
-    <div class="g">
-      <h2>Who decides the next step.</h2>
-      <p>Ask this of any AI system. The more the model decides, the more agentic it is.</p>
-      <div class="rows">
-        <div class="row frag"><div class="n">1</div><div><h3>LLM call</h3><p>One request in, one response out.</p><div class="who">decides next step: <b>no one</b></div></div><div class="sch"><span>in</span><i></i><span class="m">LLM</span><i></i><span>out</span></div></div>
-        <div class="row frag"><div class="n">2</div><div><h3>Workflow</h3><p>A fixed sequence. Some steps call the model.</p><div class="who">decides next step: <b>your code</b></div></div><div class="sch"><span class="m">LLM</span><i></i><span>code</span><i></i><span class="m">LLM</span></div></div>
-        <div class="row agent frag"><div class="n">3</div><div><h3>Agent</h3><p>The model picks the next action and when to stop.</p><div class="who">decides next step: <b>the model</b></div></div><div class="sch"><span class="m">LLM</span><i></i><span>tools</span><i></i><span>↺ repeat</span></div></div>
-      </div>
-    </div>
-    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
-  </section>
-
-  <section class="s l">
-    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">The loop</span></div>
-    <div class="g">
-      <h2>The agent loop</h2>
-      <ol class="steps">
-        <li><b>01</b>Your code builds the context and calls the model.</li>
-        <li><b>02</b>The model answers, or asks for a tool.</li>
-        <li><b>03</b>Your code runs the tool and adds the result.</li>
-      </ol>
-      <div class="dia">
-        <svg viewBox="0 0 960 620" width="960" height="620">
-          <defs>
-            <marker id="k" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#111"/></marker>
-            <marker id="r" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff3b1f"/></marker>
-          </defs>
-          <path d="M150 140 H266" stroke="#111" stroke-width="1.5" marker-end="url(#k)"/>
-          <path d="M520 140 H636" stroke="#111" stroke-width="1.5" marker-end="url(#k)"/>
-          <path d="M760 100 V40 H75 V96" stroke="#111" stroke-width="1.5" fill="none" marker-end="url(#k)"/>
-          <path d="M760 190 V376" stroke="#ff3b1f" stroke-width="3" marker-end="url(#r)"/>
-          <path d="M640 430 H395 V196" stroke="#ff3b1f" stroke-width="3" fill="none" marker-end="url(#r)"/>
-        </svg>
-        <div class="box" style="left:0;top:100px;width:150px"><b>User</b><small>task</small></div>
-        <div class="box" style="left:270px;top:90px;width:250px;height:104px"><b>Context</b><small>instructions + history</small></div>
-        <div class="box m" style="left:640px;top:90px;width:240px;height:104px"><b>Model</b><small>answer or tool call</small></div>
-        <div class="box" style="left:640px;top:380px;width:240px;height:104px"><b>Tools</b><small>your functions</small></div>
-        <div class="lab" style="left:160px;top:112px">message</div>
-        <div class="lab" style="left:536px;top:112px">prompt</div>
-        <div class="lab" style="left:340px;top:12px">final answer</div>
-        <div class="lab r" style="left:778px;top:276px">tool call</div>
-        <div class="lab r" style="left:420px;top:446px">tool result</div>
-      </div>
-    </div>
-    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
-  </section>
-
 </div>
 <script>
   const st = document.getElementById('stage'), S = [...st.querySelectorAll('.s')]; let i = 0;

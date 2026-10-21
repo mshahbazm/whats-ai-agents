@@ -1,20 +1,23 @@
-import { runAgent } from "@/lib/agent";
+import { runAgent, type ChatTurn } from "@/lib/agent";
 import { isAuthorized, unauthorized } from "@/lib/auth";
 import { createStore, type SavedData } from "@/lib/store";
 
 export async function POST(request: Request) {
   if (!isAuthorized(request)) return unauthorized();
 
-  const { message, memory, saved } = (await request.json()) as {
-    message: string;
+  const { messages, memory, saved } = (await request.json()) as {
+    messages: ChatTurn[];
     memory: boolean;
     saved: SavedData | null;
   };
 
-  // The model only ever sees this one message: chats are never stored.
-  // With memory on, the browser sends its saved to-dos and reminders, and
-  // gets the updated copy back at the end to save again.
-  const history = [{ role: "user" as const, content: message }];
+  // Chats are never stored. The browser sends either just the newest message
+  // or, with chat history on, the whole conversation from this tab.
+  // With long-term memory on, it also sends its saved to-dos and reminders,
+  // and gets the updated copy back at the end to save again.
+  const history = messages
+    .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+    .slice(-40);
   const store = createStore(memory ? saved : null);
 
   // Stream one JSON event per line so the UI can show each tool call live.

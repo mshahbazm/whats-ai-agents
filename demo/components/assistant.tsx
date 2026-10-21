@@ -23,15 +23,18 @@ type ToolPart = Extract<ThreadAssistantMessagePart, { type: "tool-call" }>;
 // (tool calls, tool results, final text) into message parts for the UI.
 const makeAgentAdapter = (password: string, onUnauthorized: () => void): ChatModelAdapter => ({
   async *run({ messages, abortSignal }) {
-    // Only the newest message is sent: the agent never sees earlier chat messages.
-    const last = messages[messages.length - 1];
-    const message = last.content.map((p) => (p.type === "text" ? p.text : "")).join("");
+    // Chat history off: only the newest message is sent.
+    // Chat history on: every message in this tab is sent again (short-term memory).
+    const history = localStorage.getItem(HISTORY_KEY) === "on";
     const memory = localStorage.getItem(MEMORY_KEY) === "on";
+    const chat = (history ? messages : messages.slice(-1))
+      .map((m) => ({ role: m.role, content: m.content.map((p) => (p.type === "text" ? p.text : "")).join("") }))
+      .filter((m) => m.content);
 
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-demo-password": password },
-      body: JSON.stringify({ message, memory, saved: memory ? readSaved() : null }),
+      body: JSON.stringify({ messages: chat, memory, saved: memory ? readSaved() : null }),
       signal: abortSignal,
     });
     if (response.status === 401) {
@@ -146,6 +149,7 @@ const suggestions = [
 // The password and the memory switch are kept in this browser's localStorage.
 const PASSWORD_KEY = "demo-password";
 const MEMORY_KEY = "demo-memory";
+const HISTORY_KEY = "demo-history";
 // With memory on, to-dos and reminders are saved here, in this browser only.
 const DATA_KEY = "demo-saved-data";
 const readSaved = () => JSON.parse(localStorage.getItem(DATA_KEY) ?? "null");
@@ -159,13 +163,32 @@ const setStoredPassword = (value: string | null) => {
   window.dispatchEvent(new StorageEvent("storage"));
 };
 
-function MemorySwitch() {
-  const memory = useSyncExternalStore(subscribe, () => localStorage.getItem(MEMORY_KEY) === "on", () => false);
+const useSetting = (key: string) =>
+  useSyncExternalStore(subscribe, () => localStorage.getItem(key) === "on", () => false);
 
-  function toggle(on: boolean) {
-    localStorage.setItem(MEMORY_KEY, on ? "on" : "off");
-    window.dispatchEvent(new StorageEvent("storage"));
-  }
+const setSetting = (key: string, on: boolean) => {
+  localStorage.setItem(key, on ? "on" : "off");
+  window.dispatchEvent(new StorageEvent("storage"));
+};
+
+function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange: (on: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-2">
+      <span className={on ? "font-medium" : "text-zinc-500"}>{label}</span>
+      <Switch.Root
+        checked={on}
+        onCheckedChange={onChange}
+        className="relative flex h-6 w-10 rounded-full bg-zinc-300 p-0.5 transition-colors data-[checked]:bg-emerald-600 dark:bg-zinc-700"
+      >
+        <Switch.Thumb className="size-5 rounded-full bg-white shadow transition-transform data-[checked]:translate-x-4" />
+      </Switch.Root>
+    </label>
+  );
+}
+
+function Settings() {
+  const history = useSetting(HISTORY_KEY);
+  const memory = useSetting(MEMORY_KEY);
 
   function forget() {
     localStorage.removeItem(DATA_KEY);
@@ -173,22 +196,14 @@ function MemorySwitch() {
   }
 
   return (
-    <div className="ml-auto flex items-center gap-3 text-sm">
+    <div className="ml-auto flex items-center gap-5 text-sm">
       {memory && (
         <button onClick={forget} className="text-zinc-500 underline-offset-2 hover:underline">
           Forget everything
         </button>
       )}
-      <label className="flex items-center gap-2">
-        <span className={memory ? "font-medium" : "text-zinc-500"}>Memory {memory ? "on" : "off"}</span>
-        <Switch.Root
-          checked={memory}
-          onCheckedChange={toggle}
-          className="relative flex h-6 w-10 rounded-full bg-zinc-300 p-0.5 transition-colors data-[checked]:bg-emerald-600 dark:bg-zinc-700"
-        >
-          <Switch.Thumb className="size-5 rounded-full bg-white shadow transition-transform data-[checked]:translate-x-4" />
-        </Switch.Root>
-      </label>
+      <Toggle label="Chat history" on={history} onChange={(on) => setSetting(HISTORY_KEY, on)} />
+      <Toggle label="Long-term memory" on={memory} onChange={(on) => setSetting(MEMORY_KEY, on)} />
     </div>
   );
 }
@@ -248,7 +263,7 @@ function Chat({ password }: { password: string }) {
         <header className="flex items-center gap-2 px-6 py-4">
           <span className="font-semibold">Shahbaz&apos;s assistant</span>
           <span className="font-mono text-xs text-zinc-500">· Building AI agents demo</span>
-          <MemorySwitch />
+          <Settings />
         </header>
 
         <ThreadPrimitive.Viewport className="flex flex-1 flex-col overflow-y-auto px-4">
