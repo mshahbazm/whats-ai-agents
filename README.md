@@ -52,10 +52,10 @@ Open <http://localhost:3000> and enter your `DEMO_PASSWORD`. Locally, memory use
 
 ### Memory switch
 
-The chat header has a **Memory** switch, off by default.
+The chat header has a **Memory** switch, off by default. Chats themselves are never stored: the agent only ever sees the message you just sent.
 
-- **Off:** every message starts blank. The model sees only that one message, and changes to to-dos or reminders last only for that request. This is how the lecture shows that an LLM remembers nothing on its own.
-- **On:** the conversation, to-dos and reminders are saved in storage (Cloudflare KV) and sent back to the model on every message. **Forget everything** clears it all.
+- **Off:** nothing is saved. Add a to-do or reminder, ask again (or refresh), and it's gone.
+- **On:** to-do and reminder changes are saved in storage (Cloudflare KV) and are still there on the next message, after a refresh, or on another device. **Forget everything** resets them to the starting data.
 
 ### Deploy to Cloudflare
 
@@ -79,7 +79,7 @@ Secrets live only in Cloudflare (`wrangler secret`). `bun run deploy` moves `.en
 | [`demo/lib/tools.ts`](demo/lib/tools.ts) | The tools: their JSON descriptions for the model, and the code that actually runs them |
 | [`demo/app/api/chat/route.ts`](demo/app/api/chat/route.ts) | API route that runs the agent and streams each step to the browser |
 | [`demo/components/assistant.tsx`](demo/components/assistant.tsx) | The chat UI, built with [assistant-ui](https://www.assistant-ui.com) and [Base UI](https://base-ui.com) |
-| [`demo/lib/store.ts`](demo/lib/store.ts) | Where data lives: the JSON files, plus Cloudflare KV when memory is on |
+| [`demo/lib/store.ts`](demo/lib/store.ts) | Where data lives: the JSON files, plus Cloudflare KV for to-dos and reminders when memory is on |
 | [`demo/lib/auth.ts`](demo/lib/auth.ts) | The password check on every API request |
 | [`demo/data/*.json`](demo/data/) | A stand-in "API": contacts, to-dos and reminders. Contacts are read-only, and `send_email` only sends to people in this list |
 
@@ -93,7 +93,8 @@ The server terminal also logs each step (`[step 2] send_email({...})`), which is
 - "Email Haris and wish him a happy birthday."
 - "Whose birthday is this week? Send each of them a birthday email."
 - "Remind me to call Ayesha tomorrow at 11am."
-- Then: "What did you just send Haris?" With memory off it has no idea, which is where the memory part of the lecture begins. Switch memory on and try again.
+- Then: "What did you just send Haris?" It has no idea, because chats are never stored. This is where the memory part of the lecture begins.
+- Memory: add a to-do, then ask for your to-dos again. With memory off it's gone; switch memory on and it stays.
 
 Emails to `*@yopmail.com` can be read at `https://yopmail.com/<name>`, for example <https://yopmail.com/haris-demo>.
 

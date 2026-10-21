@@ -8,7 +8,7 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  // With memory on, chat history, to-dos and reminders are saved here.
+  // With memory on, to-dos and reminders are saved here.
   // Secrets (API keys, DEMO_PASSWORD) are set with `wrangler secret put`, never in this file.
   "kv_namespaces": [{ "binding": "DATA", "id": "20e9c1acc4b8435798eadca9cc275ff7" }],
   "vars": {

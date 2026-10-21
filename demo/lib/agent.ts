@@ -1,5 +1,7 @@
 import OpenAI from "openai";
-import type { ChatTurn, Store } from "./store";
+import type { Store } from "./store";
+
+export type ChatTurn = { role: "user" | "assistant"; content: string };
 import { runTool, toolDefinitions } from "./tools";
 
 export const SYSTEM_PROMPT = `You are Shahbaz's personal assistant.

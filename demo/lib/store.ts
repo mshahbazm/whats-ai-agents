@@ -42,18 +42,7 @@ export function createStore(memory: boolean): Store {
   };
 }
 
-// Chat history, kept only while memory is on.
-export type ChatTurn = { role: "user" | "assistant"; content: string };
-
-export async function loadChat(): Promise<ChatTurn[]> {
-  return ((await kv().get("chat", "json")) as ChatTurn[] | null) ?? [];
-}
-
-export async function saveChat(turns: ChatTurn[]) {
-  await kv().put("chat", JSON.stringify(turns));
-}
-
-// Wipes everything the agent has remembered: chat, to-dos and reminders.
+// Wipes everything the agent has saved: to-dos and reminders go back to the JSON files.
 export async function clearMemory() {
-  await Promise.all(["chat", "todos", "reminders"].map((key) => kv().delete(key)));
+  await Promise.all(["todos", "reminders"].map((key) => kv().delete(key)));
 }

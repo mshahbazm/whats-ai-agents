@@ -23,8 +23,7 @@ type ToolPart = Extract<ThreadAssistantMessagePart, { type: "tool-call" }>;
 // (tool calls, tool results, final text) into message parts for the UI.
 const makeAgentAdapter = (password: string, onUnauthorized: () => void): ChatModelAdapter => ({
   async *run({ messages, abortSignal }) {
-    // Only the newest message is sent. With memory on, the server adds the
-    // saved conversation from storage before calling the model.
+    // Only the newest message is sent: the agent never sees earlier chat messages.
     const last = messages[messages.length - 1];
     const message = last.content.map((p) => (p.type === "text" ? p.text : "")).join("");
 
