@@ -34,7 +34,7 @@ cp .env.example .env.local   # then fill in your keys
 bun dev
 ```
 
-Open <http://localhost:3000> and enter your `DEMO_PASSWORD`. Locally, memory uses a KV store that Wrangler keeps in `.wrangler/`.
+Open <http://localhost:3000> and enter your `DEMO_PASSWORD`.
 
 ### Environment variables
 
@@ -55,21 +55,9 @@ Open <http://localhost:3000> and enter your `DEMO_PASSWORD`. Locally, memory use
 The chat header has a **Memory** switch, off by default. Chats themselves are never stored: the agent only ever sees the message you just sent.
 
 - **Off:** nothing is saved. Add a to-do or reminder, ask again (or refresh), and it's gone.
-- **On:** to-do and reminder changes are saved in storage (Cloudflare KV) and are still there on the next message, after a refresh, or on another device. **Forget everything** resets them to the starting data.
+- **On:** to-do and reminder changes are saved in your browser (localStorage) and are still there on the next message or after a refresh. **Forget everything** clears them.
 
-### Deploy to Cloudflare
-
-The demo runs on Cloudflare Workers through [OpenNext](https://opennext.js.org/cloudflare).
-
-```bash
-cd demo
-bunx wrangler login
-bunx wrangler kv namespace create whats-ai-agents-data   # put the id in wrangler.jsonc
-bunx wrangler secret put OPENAI_API_KEY                   # repeat for RESEND_API_KEY, FROM_ADDRESS, DEMO_PASSWORD
-bun run deploy
-```
-
-Secrets live only in Cloudflare (`wrangler secret`). `bun run deploy` moves `.env.local` aside during the build, because OpenNext would otherwise copy it into the Worker bundle.
+The server keeps nothing. With memory on, the browser sends its saved to-dos and reminders along with each message, the tools work on that copy, and the server sends the updated copy back for the browser to save.
 
 ### How it works
 
@@ -79,7 +67,7 @@ Secrets live only in Cloudflare (`wrangler secret`). `bun run deploy` moves `.en
 | [`demo/lib/tools.ts`](demo/lib/tools.ts) | The tools: their JSON descriptions for the model, and the code that actually runs them |
 | [`demo/app/api/chat/route.ts`](demo/app/api/chat/route.ts) | API route that runs the agent and streams each step to the browser |
 | [`demo/components/assistant.tsx`](demo/components/assistant.tsx) | The chat UI, built with [assistant-ui](https://www.assistant-ui.com) and [Base UI](https://base-ui.com) |
-| [`demo/lib/store.ts`](demo/lib/store.ts) | Where data lives: the JSON files, plus Cloudflare KV for to-dos and reminders when memory is on |
+| [`demo/lib/store.ts`](demo/lib/store.ts) | The data the tools work on for one request: the JSON files, or the browser's saved to-dos and reminders when memory is on |
 | [`demo/lib/auth.ts`](demo/lib/auth.ts) | The password check on every API request |
 | [`demo/data/*.json`](demo/data/) | A stand-in "API": contacts, to-dos and reminders. Contacts are read-only, and `send_email` only sends to people in this list |
 

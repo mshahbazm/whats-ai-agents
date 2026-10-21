@@ -26,11 +26,12 @@ const makeAgentAdapter = (password: string, onUnauthorized: () => void): ChatMod
     // Only the newest message is sent: the agent never sees earlier chat messages.
     const last = messages[messages.length - 1];
     const message = last.content.map((p) => (p.type === "text" ? p.text : "")).join("");
+    const memory = localStorage.getItem(MEMORY_KEY) === "on";
 
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-demo-password": password },
-      body: JSON.stringify({ message, memory: localStorage.getItem(MEMORY_KEY) === "on" }),
+      body: JSON.stringify({ message, memory, saved: memory ? readSaved() : null }),
       signal: abortSignal,
     });
     if (response.status === 401) {
@@ -65,6 +66,10 @@ const makeAgentAdapter = (password: string, onUnauthorized: () => void): ChatMod
           if (i >= 0) parts[i] = { ...(parts[i] as ToolPart), result: event.result };
         } else if (event.type === "text") {
           parts.push({ type: "text", text: event.text });
+        } else if (event.type === "saved") {
+          // Memory on: keep the updated to-dos and reminders in this browser.
+          localStorage.setItem(DATA_KEY, JSON.stringify(event.data));
+          continue;
         } else if (event.type === "error") {
           parts.push({ type: "text", text: `⚠️ ${event.message}` });
         }
@@ -141,6 +146,9 @@ const suggestions = [
 // The password and the memory switch are kept in this browser's localStorage.
 const PASSWORD_KEY = "demo-password";
 const MEMORY_KEY = "demo-memory";
+// With memory on, to-dos and reminders are saved here, in this browser only.
+const DATA_KEY = "demo-saved-data";
+const readSaved = () => JSON.parse(localStorage.getItem(DATA_KEY) ?? "null");
 const subscribe = (onChange: () => void) => {
   window.addEventListener("storage", onChange);
   return () => window.removeEventListener("storage", onChange);
@@ -151,7 +159,7 @@ const setStoredPassword = (value: string | null) => {
   window.dispatchEvent(new StorageEvent("storage"));
 };
 
-function MemorySwitch({ password }: { password: string }) {
+function MemorySwitch() {
   const memory = useSyncExternalStore(subscribe, () => localStorage.getItem(MEMORY_KEY) === "on", () => false);
 
   function toggle(on: boolean) {
@@ -159,8 +167,8 @@ function MemorySwitch({ password }: { password: string }) {
     window.dispatchEvent(new StorageEvent("storage"));
   }
 
-  async function forget() {
-    await fetch("/api/memory", { method: "DELETE", headers: { "x-demo-password": password } });
+  function forget() {
+    localStorage.removeItem(DATA_KEY);
     window.location.reload();
   }
 
@@ -240,7 +248,7 @@ function Chat({ password }: { password: string }) {
         <header className="flex items-center gap-2 px-6 py-4">
           <span className="font-semibold">Shahbaz&apos;s assistant</span>
           <span className="font-mono text-xs text-zinc-500">· Building AI agents demo</span>
-          <MemorySwitch password={password} />
+          <MemorySwitch />
         </header>
 
         <ThreadPrimitive.Viewport className="flex flex-1 flex-col overflow-y-auto px-4">

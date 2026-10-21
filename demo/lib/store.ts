@@ -1,4 +1,3 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import contacts from "@/data/contacts.json";
 import reminders from "@/data/reminders.json";
 import todos from "@/data/todos.json";
@@ -8,41 +7,33 @@ import todos from "@/data/todos.json";
 const seeds = { contacts, todos, reminders };
 export type DataName = keyof typeof seeds;
 
+// The to-dos and reminders the browser saved while memory was on.
+export type SavedData = { todos: unknown[]; reminders: unknown[] };
+
 export type Store = {
   load<T>(name: DataName): Promise<T[]>;
   save<T>(name: Exclude<DataName, "contacts">, rows: T[]): Promise<void>;
+  snapshot(): SavedData;
 };
 
-const kv = () => getCloudflareContext().env.DATA;
-const fresh = <T>(name: DataName) => structuredClone(seeds[name]) as T[];
-
-// Memory off: every request starts from the JSON files, and changes are
-// forgotten when the request ends.
-// Memory on: changes to to-dos and reminders are saved in Cloudflare KV.
-export function createStore(memory: boolean): Store {
-  if (!memory) {
-    const scratch = new Map<DataName, unknown[]>();
-    return {
-      async load<T>(name: DataName) {
-        return (scratch.get(name) as T[]) ?? fresh<T>(name);
-      },
-      async save(name, rows) {
-        scratch.set(name, rows);
-      },
-    };
-  }
+// A store for one request. It starts from the browser's saved data when
+// memory is on, otherwise from the JSON files. The server keeps nothing:
+// with memory on, the browser saves the snapshot it gets back.
+export function createStore(saved?: SavedData | null): Store {
+  const rows = new Map<DataName, unknown[]>([
+    ["contacts", structuredClone(seeds.contacts)],
+    ["todos", structuredClone(saved?.todos ?? seeds.todos)],
+    ["reminders", structuredClone(saved?.reminders ?? seeds.reminders)],
+  ]);
   return {
     async load<T>(name: DataName) {
-      if (name === "contacts") return fresh<T>(name);
-      return ((await kv().get(name, "json")) as T[] | null) ?? fresh<T>(name);
+      return rows.get(name) as T[];
     },
-    async save(name, rows) {
-      await kv().put(name, JSON.stringify(rows));
+    async save(name, value) {
+      rows.set(name, value);
+    },
+    snapshot() {
+      return { todos: rows.get("todos")!, reminders: rows.get("reminders")! };
     },
   };
-}
-
-// Wipes everything the agent has saved: to-dos and reminders go back to the JSON files.
-export async function clearMemory() {
-  await Promise.all(["todos", "reminders"].map((key) => kv().delete(key)));
 }

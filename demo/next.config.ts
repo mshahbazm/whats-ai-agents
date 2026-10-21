@@ -1,4 +1,3 @@
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -13,6 +12,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
-// Lets `next dev` use the Cloudflare bindings (a local copy of the KV store).
-initOpenNextCloudflareForDev();
