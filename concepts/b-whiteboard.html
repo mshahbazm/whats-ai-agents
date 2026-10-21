@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept B · Whiteboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1c2230; --soft: #5b6475; --blue: #2459e0; --red: #e0344b; --hi: #ffe36b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #dfe3ea; font-family: 'Inter', sans-serif; color: var(--ink); }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center; overflow: hidden;
+    background-color: #fff;
+    background-image: linear-gradient(#eef2f8 1px, transparent 1px), linear-gradient(90deg, #eef2f8 1px, transparent 1px);
+    background-size: 40px 40px; }
+  .s { position: absolute; inset: 0; display: none; }
+  .s.on { display: block; }
+  .ink { position: absolute; inset: 0; width: 1600px; height: 900px; pointer-events: none; }
+  .tx { position: absolute; }
+  .hand { font-family: 'Kalam', cursive; }
+  .eyebrow { font: 600 16px 'Inter'; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+  h1 { font-size: 128px; font-weight: 800; letter-spacing: -5px; line-height: .95; position: relative; }
+  h2 { font-size: 64px; font-weight: 800; letter-spacing: -2.5px; line-height: 1; }
+  .note { font: 400 30px 'Kalam', cursive; color: var(--blue); line-height: 1.2; }
+  .note.red { color: var(--red); }
+  .lbl { font: 700 30px 'Inter'; letter-spacing: -.6px; text-align: center; }
+  .sub { font: 400 19px 'Inter'; color: var(--soft); text-align: center; margin-top: 4px; }
+  .card h3 { font-size: 34px; font-weight: 700; letter-spacing: -1px; }
+  .card p { font-size: 21px; color: var(--soft); margin-top: 8px; line-height: 1.4; }
+  .who { font: 400 26px 'Kalam', cursive; margin-top: 22px; }
+  .chip { position: absolute; font: 600 18px 'Inter'; transform: translate(-50%, -50%); }
+  .pg { position: absolute; right: 64px; bottom: 44px; font: 500 15px 'Inter'; color: var(--soft); }
+  .speaker { position: absolute; left: 120px; bottom: 96px; font-size: 22px; color: var(--soft); }
+  .speaker b { color: var(--ink); display: block; font-size: 26px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 · title -->
+  <section class="s" data-draw="title">
+    <svg class="ink"></svg>
+    <div class="tx eyebrow" style="left:120px;top:150px">Guest lecture · University Name</div>
+    <h1 class="tx" style="left:120px;top:210px">Building<br>AI agents</h1>
+    <div class="tx" style="left:122px;top:490px;font-size:28px;color:var(--soft);max-width:620px;line-height:1.4">From a language model to a system that can act. Six parts, seven live experiments.</div>
+    <div class="tx lbl" style="left:1095px;top:208px;width:200px">think</div>
+    <div class="tx lbl" style="left:1290px;top:522px;width:200px">act</div>
+    <div class="tx lbl" style="left:885px;top:522px;width:200px">observe</div>
+    <div class="tx note" style="left:1010px;top:700px;transform:rotate(-3deg)">by the end of today,<br>you'll build this loop</div>
+    <div class="speaker"><b>Shahbaz Manzoor</b>Software Engineer · AI products &amp; agents</div>
+    <div class="pg"></div>
+  </section>
+
+  <!-- 2 · what is an agent -->
+  <section class="s" data-draw="spectrum">
+    <svg class="ink"></svg>
+    <div class="tx eyebrow" style="left:120px;top:96px">Part 2 · Agent architecture</div>
+    <h2 class="tx" style="left:120px;top:136px">Who decides what happens next?</h2>
+    <div class="tx card" style="left:150px;top:300px;width:380px">
+      <h3>LLM call</h3><p>One request in, one response out.</p>
+      <div class="who" style="color:var(--soft)">decides: nobody</div>
+    </div>
+    <div class="tx card" style="left:610px;top:300px;width:380px">
+      <h3>Workflow</h3><p>A fixed sequence of steps. Some call the model.</p>
+      <div class="who" style="color:var(--soft)">decides: your code</div>
+    </div>
+    <div class="tx card" style="left:1070px;top:300px;width:380px">
+      <h3>Agent</h3><p>The model picks the next action, and when it is done.</p>
+      <div class="who" style="color:var(--red)">decides: the model</div>
+    </div>
+    <div class="chip" style="left:225px;top:660px">in</div><div class="chip" style="left:340px;top:660px">LLM</div><div class="chip" style="left:455px;top:660px">out</div>
+    <div class="chip" style="left:680px;top:660px">LLM</div><div class="chip" style="left:800px;top:660px">code</div><div class="chip" style="left:920px;top:660px">LLM</div>
+    <div class="chip" style="left:1180px;top:660px">LLM</div><div class="chip" style="left:1340px;top:660px">tools</div>
+    <div class="tx note red" style="left:1150px;top:770px;transform:rotate(-2deg)">this one is today's topic</div>
+    <div class="pg"></div>
+  </section>
+
+  <!-- 3 · the loop -->
+  <section class="s" data-draw="loop">
+    <svg class="ink"></svg>
+    <div class="tx eyebrow" style="left:120px;top:96px">Part 2 · Agent architecture</div>
+    <h2 class="tx" style="left:120px;top:136px">The agent loop</h2>
+    <div class="tx" style="left:110px;top:400px;width:150px"><div class="lbl">User</div></div>
+    <div class="tx" style="left:380px;top:375px;width:260px"><div class="lbl">Context</div><div class="sub">instructions + history</div></div>
+    <div class="tx" style="left:790px;top:375px;width:240px"><div class="lbl">Model</div><div class="sub">answer or tool call?</div></div>
+    <div class="tx" style="left:790px;top:655px;width:240px"><div class="lbl">Tools</div><div class="sub">your functions</div></div>
+    <div class="tx note" style="left:1112px;top:548px">tool call</div>
+    <div class="tx note" style="left:590px;top:738px">tool result</div>
+    <div class="tx note" style="left:560px;top:212px;color:var(--soft)">final answer</div>
+    <div class="tx note red" style="left:1180px;top:330px;transform:rotate(-4deg)">repeats until the<br>model stops asking</div>
+    <div class="pg"></div>
+  </section>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<script>
+  const INK = '#1c2230', BLUE = '#2459e0', RED = '#e0344b', HI = '#ffe36b';
+  const base = { roughness: 1.3, bowing: 1.2, stroke: INK, strokeWidth: 2.2 };
+  const add = (svg, node) => svg.appendChild(node);
+  function arrow(rc, svg, pts, o = {}) {
+    const opt = { ...base, ...o };
+    add(svg, pts.length > 2 ? rc.curve(pts, opt) : rc.line(...pts[0], ...pts[1], opt));
+    const [x1, y1] = pts[pts.length - 2], [x2, y2] = pts[pts.length - 1];
+    const a = Math.atan2(y2 - y1, x2 - x1), L = 18;
+    add(svg, rc.line(x2, y2, x2 - L * Math.cos(a - .45), y2 - L * Math.sin(a - .45), opt));
+    add(svg, rc.line(x2, y2, x2 - L * Math.cos(a + .45), y2 - L * Math.sin(a + .45), opt));
+  }
+  const DRAW = {
+    title(rc, svg) {
+      add(svg, rc.rectangle(112, 340, 560, 70, { ...base, stroke: 'none', fill: HI, fillStyle: 'solid', roughness: 2, seed: 4 }));
+      svg.parentNode.querySelector('h1').style.zIndex = 1;
+      add(svg, rc.ellipse(1195, 230, 230, 110, { ...base, seed: 1 }));
+      add(svg, rc.ellipse(1390, 545, 220, 110, { ...base, seed: 2 }));
+      add(svg, rc.ellipse(985, 545, 240, 110, { ...base, seed: 3 }));
+      arrow(rc, svg, [[1300, 270], [1370, 360], [1395, 480]], { stroke: BLUE, seed: 5 });
+      arrow(rc, svg, [[1270, 580], [1190, 610], [1110, 580]], { stroke: BLUE, seed: 6 });
+      arrow(rc, svg, [[985, 485], [1010, 360], [1090, 270]], { stroke: BLUE, seed: 7 });
+    },
+    spectrum(rc, svg) {
+      [[130, 280], [590, 280], [1050, 280]].forEach(([x, y], k) => add(svg, rc.rectangle(x, y, 420, 440, { ...base, seed: 10 + k })));
+      // mini flows
+      [[225, 660, 'r'], [340, 660, 'f'], [455, 660, 'r'], [680, 660, 'f'], [800, 660, 'r'], [920, 660, 'f'], [1180, 660, 'f'], [1340, 660, 'r']].forEach(([x, y, t], k) =>
+        add(svg, rc.rectangle(x - 46, y - 24, 92, 48, t === 'f' ? { ...base, fill: '#e9edf5', fillStyle: 'hachure', hachureGap: 6, seed: 20 + k } : { ...base, seed: 20 + k })));
+      [[271, 660, 294], [386, 660, 409], [726, 660, 754], [846, 660, 874]].forEach(([a, y, b], k) => arrow(rc, svg, [[a, y], [b, y]], { seed: 40 + k, strokeWidth: 1.8 }));
+      arrow(rc, svg, [[1226, 650], [1294, 650]], { seed: 50, strokeWidth: 1.8 });
+      arrow(rc, svg, [[1294, 672], [1226, 672]], { seed: 51, strokeWidth: 1.8 });
+      add(svg, rc.ellipse(1260, 500, 500, 520, { ...base, stroke: RED, strokeWidth: 2.6, roughness: 1.8, seed: 60 }));
+    },
+    loop(rc, svg) {
+      add(svg, rc.rectangle(95, 380, 180, 90, { ...base, seed: 70 }));
+      add(svg, rc.rectangle(370, 355, 280, 130, { ...base, seed: 71 }));
+      add(svg, rc.rectangle(780, 355, 260, 130, { ...base, fill: HI, fillStyle: 'hachure', hachureGap: 7, seed: 72 }));
+      add(svg, rc.rectangle(780, 635, 260, 130, { ...base, seed: 73 }));
+      arrow(rc, svg, [[280, 425], [362, 425]], { seed: 74 });
+      arrow(rc, svg, [[655, 420], [772, 420]], { seed: 75 });
+      arrow(rc, svg, [[910, 350], [880, 270], [500, 260], [190, 300], [185, 372]], { seed: 76, stroke: '#8a93a3' });
+      arrow(rc, svg, [[1050, 470], [1090, 560], [1045, 660]], { seed: 77, stroke: BLUE, strokeWidth: 2.8 });
+      arrow(rc, svg, [[775, 710], [560, 720], [505, 495]], { seed: 78, stroke: BLUE, strokeWidth: 2.8 });
+    },
+  };
+  const st = document.getElementById('stage'), S = [...st.querySelectorAll('.s')]; let i = 0;
+  const drawn = new Set();
+  function draw(s) {
+    if (drawn.has(s) || !window.rough) return;
+    const svg = s.querySelector('.ink');
+    svg.setAttribute('viewBox', '0 0 1600 900');
+    DRAW[s.dataset.draw](rough.svg(svg), svg);
+    drawn.add(s);
+  }
+  const fit = () => { const k = Math.min(innerWidth / 1600, innerHeight / 900) * .98; st.style.transform = `translate(-50%,-50%) scale(${k})`; };
+  const go = n => { i = Math.max(0, Math.min(S.length - 1, n)); S.forEach((s, j) => s.classList.toggle('on', j === i)); draw(S[i]); S.forEach((s, j) => s.querySelector('.pg').textContent = `${j + 1} / ${S.length}`); location.hash = i + 1; };
+  addEventListener('resize', fit);
+  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) go(i + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(i - 1); });
+  st.addEventListener('click', () => go(i + 1));
+  fit(); go((parseInt(location.hash.slice(1)) || 1) - 1);
+</script>
+</body>
+</html>

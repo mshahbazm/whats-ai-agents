@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept A · Swiss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #111; --grey: #8b8b8b; --rule: #111; --red: #ff3b1f; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #d9d9d9; font-family: 'Inter Tight', sans-serif; color: var(--ink); }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; background: #fff; transform-origin: center; overflow: hidden; }
+  .s { position: absolute; inset: 0; padding: 64px 72px; display: none; }
+  .s.on { display: block; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .meta { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; font: 500 15px 'IBM Plex Mono', monospace; letter-spacing: .02em; color: var(--grey); }
+  .foot { position: absolute; left: 72px; right: 72px; bottom: 56px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); }
+
+  /* title */
+  .t1 h1 { font-weight: 800; font-size: 232px; line-height: .84; letter-spacing: -12px; margin-top: 74px; }
+  .t1 h1 span { color: var(--red); }
+  .t1 .disc { position: absolute; right: -150px; top: 180px; width: 620px; height: 620px; border-radius: 50%; background: var(--red); }
+  .t1 .disc i { position: absolute; left: 92px; top: 270px; font: 500 16px 'IBM Plex Mono', monospace; color: #fff; font-style: normal; line-height: 1.7; }
+
+  /* what is an agent */
+  .g { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; margin-top: 40px; }
+  .g h2 { grid-column: 1 / span 4; font-size: 76px; font-weight: 800; line-height: .92; letter-spacing: -3.5px; }
+  .g h2 + p { grid-column: 1 / span 4; grid-row: 2; font-size: 22px; line-height: 1.4; color: #444; align-self: end; }
+  .rows { grid-column: 6 / span 7; grid-row: 1 / span 2; padding-top: 14px; }
+  .row { display: grid; grid-template-columns: 70px 1fr 280px; gap: 24px; align-items: start; padding: 0 0 56px; }
+  .row .n { font-size: 64px; font-weight: 800; letter-spacing: -3px; line-height: .9; }
+  .row h3 { font-size: 34px; font-weight: 600; letter-spacing: -1px; }
+  .row p { font-size: 20px; color: #555; margin-top: 8px; line-height: 1.4; }
+  .row .who { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); margin-top: 14px; }
+  .row .who b { color: var(--ink); font-weight: 500; }
+  .row.agent .n, .row.agent .who b { color: var(--red); }
+  .sch { display: flex; align-items: center; gap: 0; height: 64px; }
+  .sch span { font: 500 15px 'IBM Plex Mono', monospace; padding: 8px 12px; color: #555; }
+  .sch span.m { background: var(--ink); color: #fff; border-radius: 3px; }
+  .sch i { width: 28px; height: 1.5px; background: #bbb; }
+  .row.agent .sch span.m { background: var(--red); }
+
+  /* loop */
+  .l .g h2 { font-size: 76px; }
+  .steps { grid-column: 1 / span 4; grid-row: 2; align-self: end; list-style: none; }
+  .steps li { font-size: 21px; line-height: 1.4; padding: 10px 0; display: grid; grid-template-columns: 44px 1fr; color: #333; }
+  .steps li b { font: 500 15px 'IBM Plex Mono', monospace; padding-top: 4px; }
+  .dia { grid-column: 5 / span 8; grid-row: 1 / span 2; position: relative; height: 620px; }
+  .dia svg { position: absolute; inset: 0; }
+  .box { position: absolute; border: 1.5px solid var(--ink); background: #fff; padding: 16px 18px; }
+  .box b { display: block; font-size: 26px; font-weight: 600; letter-spacing: -.6px; }
+  .box small { font: 400 14px 'IBM Plex Mono', monospace; color: var(--grey); }
+  .box.m { background: var(--ink); color: #fff; }
+  .box.m small { color: #9a9a9a; }
+  .lab { position: absolute; font: 500 14px 'IBM Plex Mono', monospace; }
+  .lab.r { color: var(--red); }
+
+  /* part 01: language models */
+  .hw { font-size: 76px; font-weight: 800; line-height: .92; letter-spacing: -3.5px; margin-top: 40px; }
+  .lede { font-size: 24px; line-height: 1.45; color: #444; }
+  .pred { grid-column: 6 / span 7; grid-row: 1 / span 2; padding-top: 20px; }
+  .prompt { font-size: 54px; font-weight: 600; letter-spacing: -1.6px; }
+  .prompt u { display: inline-block; width: 150px; height: 6px; background: var(--red); text-decoration: none; margin-left: 12px; }
+  .bars { margin-top: 64px; }
+  .bar { display: grid; grid-template-columns: 170px 1fr 80px; gap: 24px; align-items: center; padding: 11px 0; font: 500 22px 'IBM Plex Mono', monospace; }
+  .bar i { display: block; height: 14px; background: #e6e6e6; }
+  .bar.top i { background: var(--red); }
+  .bar.top b { color: var(--red); }
+  .bar b { font-weight: 500; }
+  .bar span { color: var(--grey); text-align: right; }
+  .formula { font: 500 44px 'IBM Plex Mono', monospace; margin-top: 46px; }
+  .formula em { font-style: normal; color: var(--red); }
+  .terms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 64px; margin-top: 96px; }
+  .terms small { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); }
+  .terms h3 { font-size: 60px; font-weight: 800; letter-spacing: -2.5px; margin: 10px 0 16px; }
+  .terms p { font-size: 22px; line-height: 1.45; color: #555; }
+  .toks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 70px; }
+  .tok { display: flex; flex-direction: column; gap: 12px; }
+  .tok b { font-size: 60px; font-weight: 600; letter-spacing: -1.5px; padding: 10px 16px; background: #f0f0f0; white-space: pre; }
+  .tok:nth-child(even) b { background: #ffe1da; }
+  .tok small { font: 500 16px 'IBM Plex Mono', monospace; color: var(--grey); padding-left: 16px; }
+  .note { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); margin-top: 28px; }
+  .gen { grid-column: 6 / span 7; grid-row: 1 / span 2; padding-top: 30px; }
+  .gen .st { display: grid; grid-template-columns: 110px 1fr; align-items: baseline; padding: 16px 0; }
+  .gen .st small { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); }
+  .gen .st div { font-size: 40px; font-weight: 600; letter-spacing: -1px; color: #b5b5b5; }
+  .gen .st div b { color: var(--red); font-weight: 600; }
+  .code { margin-top: 56px; background: #f4f4f4; padding: 26px 30px; font: 500 22px/1.65 'IBM Plex Mono', monospace; white-space: pre; }
+  .code .c { color: var(--grey); }
+  .facts { grid-column: 6 / span 7; grid-row: 1 / span 2; padding-top: 18px; }
+  .facts .hd, .facts .f { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .facts .hd { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); padding-bottom: 20px; }
+  .facts .f { padding: 22px 0; }
+  .facts .f b { font-size: 27px; font-weight: 600; letter-spacing: -.6px; }
+  .facts .f span { font-size: 23px; line-height: 1.4; color: #555; }
+  .frag { opacity: 0; transform: translateY(10px); transition: opacity .35s, transform .35s; }
+  .frag.in { opacity: 1; transform: none; }
+  .ctr { position: absolute; left: 72px; right: 72px; top: 130px; bottom: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .q { font-size: 150px; font-weight: 800; line-height: .9; letter-spacing: -7px; }
+  .kick { font: 500 18px 'IBM Plex Mono', monospace; color: var(--grey); margin-bottom: 22px; }
+  .a { font-size: 92px; font-weight: 800; line-height: .95; letter-spacing: -4px; }
+  .word { font-size: 200px; font-weight: 800; line-height: .9; letter-spacing: -10px; }
+  .lim { font-size: 100px; font-weight: 800; line-height: .95; letter-spacing: -4.5px; max-width: 1456px; }
+  .sub { font-size: 30px; line-height: 1.4; color: #555; max-width: 900px; margin-top: 36px; }
+  .ctr .ex { width: 1000px; margin-top: 48px; text-align: left; }
+  .ctr .prompt { font-size: 44px; }
+  .ctr .bars { margin-top: 28px; }
+  .ctr .bar { padding: 6px 0; font-size: 20px; }
+  .ctr .gen .st { padding: 8px 0; }
+  .ctr .gen .code { margin-top: 30px; font-size: 20px; padding: 20px 26px; }
+  .ctr .formula { margin-top: 0; font-size: 60px; }
+  .ctr .toks { justify-content: center; margin-top: 56px; }
+  .ctr .gen { padding-top: 0; margin-top: 36px; text-align: left; }
+  .ctr .gen .st div { font-size: 36px; }
+  .q span { color: var(--red); }
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 72px; width: 100%; }
+  .trio h2 { font-size: 104px; font-weight: 800; letter-spacing: -5px; line-height: 1; }
+  .trio p { font-size: 26px; line-height: 1.4; color: #555; margin-top: 22px; }
+  .trio + .formula { margin-top: 110px; font-size: 46px; }
+  .code.big { font-size: 28px; padding: 34px 44px; margin-top: 56px; text-align: left; }
+  .code .r { color: var(--red); }
+  .runline { width: 1300px; text-align: left; font-size: 64px; font-weight: 600; letter-spacing: -2px; line-height: 1.15; max-width: 1350px; color: #111; }
+  .runline .t { opacity: 0; transform: none; transition: opacity .25s, color .25s; white-space: pre; }
+  .runline .t.in { opacity: 1; color: #111; }
+  .runline .t.cur { color: var(--red); }
+  .runline .t.end { color: var(--grey); }
+  .log { align-self: flex-start; margin-left: 78px; margin-top: 56px; font: 500 26px 'IBM Plex Mono', monospace; color: #555; background: #f4f4f4; padding: 18px 28px; }
+  .log b { color: var(--red); font-weight: 500; }
+  .stopnote { opacity: 0; transition: opacity .3s; font-size: 20px; }
+  .live.done .stopnote { opacity: 1; }
+  .pair { display: grid; grid-template-columns: 1fr 90px 1fr; align-items: start; margin-top: 60px; text-align: left; }
+  .pair .code { margin-top: 0; font-size: 22px; padding: 26px 30px; min-height: 190px; }
+  .pair .kick { display: block; margin-bottom: 14px; }
+  .pair .arrow { font-size: 48px; text-align: center; color: var(--red); padding-top: 110px; }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px; margin-top: 72px; text-align: left; width: 100%; }
+  .flow b { display: block; font: 500 18px 'IBM Plex Mono', monospace; color: var(--grey); margin-bottom: 14px; }
+  .flow span { font-size: 30px; font-weight: 600; letter-spacing: -.6px; line-height: 1.2; }
+  .flow .hot b, .flow .hot span { color: var(--red); }
+  .bb { display: flex; align-items: center; margin-top: 64px; }
+  .bb .io { font: 500 26px 'IBM Plex Mono', monospace; color: #555; padding: 0 18px; }
+  .bb .bbx { background: var(--ink); color: #fff; font-size: 44px; font-weight: 800; letter-spacing: -1px; padding: 44px 64px; }
+  .bb i { width: 90px; height: 2px; background: #bbb; }
+  .code.mid { margin-top: 48px; font-size: 26px; padding: 24px 36px; text-align: left; }
+  .pair2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; text-align: left; width: 1300px; }
+  .pair2 .code { margin-top: 0; font-size: 22px; padding: 26px 30px; }
+  .pair2 .kick { display: block; margin-bottom: 14px; }
+  .tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 70px; width: 1300px; }
+  .tools div { background: #f4f4f4; padding: 30px 28px; text-align: left; }
+  .tools code { display: block; font: 500 24px 'IBM Plex Mono', monospace; }
+  .tools span { display: block; margin-top: 12px; font-size: 22px; color: #555; }
+  .trace { margin-top: 48px; width: 1360px; text-align: left; }
+  .trace > div { display: grid; grid-template-columns: 50px 1.35fr 1fr; gap: 24px; padding: 13px 0; align-items: baseline; }
+  .trace .hd { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); padding-bottom: 6px; }
+  .trace b { font: 500 18px 'IBM Plex Mono', monospace; color: var(--grey); }
+  .trace code { font: 500 21px 'IBM Plex Mono', monospace; }
+  .trace .res { color: #555; }
+  .trace .fin code { color: var(--red); }
+  .code.unroll { font-size: 24px; padding: 26px 40px; margin-top: 40px; }
+  .unroll .blk { display: block; }
+  .unroll .blk + .blk { margin-top: 14px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <section class="s t1">
+    <div class="meta"></div>
+    <div class="disc"><i>while True:<br>&nbsp;&nbsp;reply = llm(messages, tools)<br>&nbsp;&nbsp;if not reply.tool_calls:<br>&nbsp;&nbsp;&nbsp;&nbsp;return reply<br>&nbsp;&nbsp;messages += run(reply)</i></div>
+    <h1>Building<br>AI agents<span>.</span></h1>
+    <div class="foot"><span style="grid-column:1/span 4">Shahbaz Manzoor</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+    <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">What is<br>an LLM<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <small class="kick">LLM = Large Language Model</small>
+      <h2 class="a">It predicts the next word.</h2>
+      <div class="ex">
+        <div class="prompt">The students walked into the exam hall feeling<u></u></div>
+        <div class="bars">
+          <div class="bar top"><b>nervous</b><i style="width:100%"></i><span>31%</span></div>
+          <div class="bar"><b>confident</b><i style="width:39%"></i><span>12%</span></div>
+          <div class="bar"><b>ready</b><i style="width:32%"></i><span>10%</span></div>
+          <div class="bar"><b>sick</b><i style="width:23%"></i><span>7%</span></div>
+          <div class="bar"><b>prepared</b><i style="width:19%"></i><span>6%</span></div>
+        </div>
+        <p class="note">Every possible next word gets a probability. The model picks from the top.</p>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">Why call it a<br>language model<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <div class="trio">
+        <div><h2>Large</h2><p>Billions of numbers, trained on trillions of words.</p></div>
+        <div><h2>Language</h2><p>Trained on text. Newer multimodal models also handle images and audio, all turned into tokens.</p></div>
+        <div><h2>Model</h2><p>A function adjusted on examples until its guesses match real text.</p></div>
+      </div>
+      <div class="formula">P( <em>next token</em> | every token so far )</div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Tokens</span></div>
+    <div class="ctr">
+      <h2 class="a">It reads tokens, not words.</h2>
+      <div class="toks"><div class="tok"><b>Un</b><small>1844</small></div><div class="tok"><b>believ</b><small>27378</small></div><div class="tok"><b>ably</b><small>2735</small></div><div class="tok"><b>,</b><small>11</small></div><div class="tok"><b> agents</b><small>13307</small></div><div class="tok"><b> aren</b><small>7010</small></div><div class="tok"><b>'t</b><small>956</small></div><div class="tok"><b> magic</b><small>11204</small></div><div class="tok"><b>.</b><small>13</small></div></div>
+      <p class="sub">Text is split into pieces and every piece becomes a number. The model only ever sees the numbers.</p>
+      <p class="note">Example split. Each model has its own tokenizer.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Generation</span></div>
+    <div class="ctr">
+      <small class="kick">How it writes a full answer</small>
+      <h2 class="a">A good old while loop.</h2>
+      <div class="code big">text = prompt
+while True:
+    token = model(text)    <span class="c"># one prediction</span>
+<span class="r">    if token == END:       # the model says "done"
+        break</span>
+    text += token</div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s live">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Generation · running</span></div>
+    <div class="ctr">
+      <div class="runline">The students walked into the exam hall feeling<span class="frag t" data-log='pass 1 &nbsp; model(text) → " nervous"'> nervous</span><span class="frag t" data-log='pass 2 &nbsp; model(text) → " about"'> about</span><span class="frag t" data-log='pass 3 &nbsp; model(text) → " the"'> the</span><span class="frag t" data-log='pass 4 &nbsp; model(text) → " results"'> results</span><span class="frag t" data-log='pass 5 &nbsp; model(text) → "."'>.</span><span class="frag t end" data-log='pass 6 &nbsp; model(text) → <b>END</b> &nbsp; → break'> ⟨END⟩</span></div>
+      <div class="log" data-log0="pass 0 &nbsp; text = prompt">pass 0 &nbsp; text = prompt</div>
+      <p class="note stopnote">END is a token too. The model learned to predict it when an answer is complete.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">What can’t it<br>do on its own<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Limit · 1 of 4</span></div>
+    <div class="ctr">
+      <h2 class="lim">It can only generate.</h2>
+      <p class="sub frag">It can tell you what to do, but it can't do it for you. It can't search, send an email or run code on its own.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Limit · 2 of 4</span></div>
+    <div class="ctr">
+      <h2 class="lim">Every call starts blank.</h2>
+      <p class="sub frag">So it forgets the conversation unless we send it again.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Limit · 3 of 4</span></div>
+    <div class="ctr">
+      <h2 class="lim">Its knowledge stops at training.</h2>
+      <p class="sub frag">So it doesn't know today, your files or your data.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">01 — Language models</span><span style="grid-column:9/span 4;text-align:right">Limit · 4 of 4</span></div>
+    <div class="ctr">
+      <h2 class="lim">It predicts likely text.</h2>
+      <p class="sub frag">So it can sound certain and still be wrong.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">So how do we make<br>it do things<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Step 1</span></div>
+    <div class="ctr">
+      <h2 class="a">Treat the LLM as a function.</h2>
+      <div class="bb">
+        <span class="io">text</span><i></i><span class="bbx">LLM</span><i></i><span class="io">text</span>
+      </div>
+      <div class="code mid">reply = llm(text)</div>
+      <p class="sub frag">We can't change what happens inside. We control what we send in, and what we do with the reply.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Step 2</span></div>
+    <div class="ctr">
+      <h2 class="a">Our code can already act.</h2>
+      <div class="code mid">def send_email(to, body):
+    ...   <span class="c"># any program can do this</span></div>
+      <p class="sub frag">What our code doesn't know is when to send it, or what to write. The model does.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Step 3</span></div>
+    <div class="ctr">
+      <h2 class="a">Ask for a reply our code can read.</h2>
+      <div class="pair2">
+        <div><small class="kick">We send</small><div class="code">You can send emails.
+To send one, reply only with:
+EMAIL | to | body
+
+Task: send Ali the lecture notes.</div></div>
+        <div class="frag"><small class="kick">The model replies</small><div class="code">EMAIL | ali@uni.edu | Notes attached.</div></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Step 4</span></div>
+    <div class="ctr">
+      <h2 class="a">Our code reads it and acts.</h2>
+      <div class="code big">reply = llm(prompt)
+
+<span class="r">if reply.startswith("EMAIL"):
+    _, to, body = reply.split(" | ")
+    send_email(to, body)</span>      <span class="c"># the action happens here</span></div>
+      <p class="sub frag">The model decided. Our code did it.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Step 5</span></div>
+    <div class="ctr">
+      <small class="kick">Splitting on " | " breaks easily</small>
+      <h2 class="a">Modern LLMs can reply in JSON.</h2>
+      <div class="pair2">
+        <div><small class="kick">We ask for this shape</small><div class="code">{
+  "action": "send_email",
+  "to":     string,
+  "body":   string
+}</div></div>
+        <div class="frag"><small class="kick">The model replies</small><div class="code">{
+  "action": "send_email",
+  "to":     "ali@uni.edu",
+  "body":   "Notes attached."
+}</div></div>
+      </div>
+      <div class="code mid frag">call = json.loads(reply)
+send_email(call["to"], call["body"])</div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">Notice what<br>we just did<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="word" style="font-size:130px;letter-spacing:-6px">We gave the LLM<br>a new ability.</h2>
+      <p class="sub">On its own it could only write. Now it can send an email, without the model itself changing at all.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">send_email is a tool.</h2>
+      <p class="sub">A function we describe to the model, so it can ask us to run it. That JSON request is called a tool call.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">A harder task</span></div>
+    <div class="ctr">
+      <small class="kick">A harder task</small>
+      <h2 class="a" style="font-size:80px;max-width:1300px">“If it’s Haris’s birthday today, send him a birthday email.”</h2>
+      <p class="sub frag">One reply can’t do this. The model doesn’t know Haris’s email, his birthday, or today’s date.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">A harder task</span></div>
+    <div class="ctr">
+      <h2 class="a">It needs more than one tool.</h2>
+      <div class="tools">
+        <div class="frag"><code>find_contact(name)</code><span>email and birthday</span></div>
+        <div class="frag"><code>get_today()</code><span>today’s date</span></div>
+        <div class="frag"><code>send_email(to, body)</code><span>sends it</span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Attempt 1</span></div>
+    <div class="ctr">
+      <small class="kick">Attempt 1</small>
+      <h2 class="a">Our code decides the steps.</h2>
+      <div class="code big">contact = find_contact("Haris")
+today   = get_today()
+
+if contact.birthday == today:
+    body = <span class="r">llm("Write a short birthday email")</span>
+    send_email(contact.email, body)</div>
+      <p class="sub frag">It works, but the order is fixed in our code. A different task needs different code.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Naming it</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">This is a workflow.</h2>
+      <p class="sub">The steps are fixed in our code, and the LLM is just one step inside it. Perfect for jobs that run the same way every time.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">What if the LLM<br>picks the next step<span>?</span></h1>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Attempt 2</span></div>
+    <div class="ctr">
+      <small class="kick">Attempt 2</small>
+      <h2 class="a">Ask, run, send back. Again.</h2>
+      <div class="code big unroll"><span class="frag blk">reply  = llm(task, tools)             <span class="c"># → find_contact("Haris")</span>
+result = run(reply)</span><span class="frag blk">reply  = llm(task + result, tools)    <span class="c"># → get_today()</span>
+result = run(reply)</span><span class="frag blk">reply  = llm(task + results, tools)   <span class="c"># → send_email(...)</span>
+result = run(reply)</span><span class="frag blk">reply  = llm(task + results, tools)   <span class="c"># → no tool: "Done."</span></span></div>
+      <p class="sub frag">The same two lines, over and over. The LLM chooses each step.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">The loop</span></div>
+    <div class="ctr">
+      <small class="kick">Repeat until there’s no tool call</small>
+      <h2 class="a">Another while loop.</h2>
+      <div class="code big">messages = [task]
+while True:
+    reply = model(messages, tools)
+<span class="r">    if not reply.tool_calls:     # the model says "done"
+        return reply.text</span>
+    result = run(reply.tool_calls)
+    messages += [reply, result]</div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Definition</span></div>
+    <div class="ctr">
+      <small class="kick">This has a name too</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">The agentic loop.</h2>
+      <p class="sub">An LLM with tools, running in a loop and deciding each next step until the task is done. That is an agent.</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Question</span></div>
+    <div class="ctr">
+      <h1 class="q">So what is ChatGPT<span>?</span></h1>
+      <p class="sub" style="font-family:'IBM Plex Mono',monospace;font-size:26px">An LLM · a workflow · an agent</p>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Answer</span></div>
+    <div class="ctr">
+      <h2 class="a">An agent, built around an LLM.</h2>
+      <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1100px">
+        <div class="frag"><code>GPT</code><span>The LLM. Predicts the next token.</span></div>
+        <div class="frag"><code>ChatGPT</code><span>The app around it. Gives it tools like web search, code and memory, and lets it decide when to use them.</span></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">Definition</span></div>
+    <div class="g">
+      <h2>Who decides the next step.</h2>
+      <p>Ask this of any AI system. The more the model decides, the more agentic it is.</p>
+      <div class="rows">
+        <div class="row frag"><div class="n">1</div><div><h3>LLM call</h3><p>One request in, one response out.</p><div class="who">decides next step: <b>no one</b></div></div><div class="sch"><span>in</span><i></i><span class="m">LLM</span><i></i><span>out</span></div></div>
+        <div class="row frag"><div class="n">2</div><div><h3>Workflow</h3><p>A fixed sequence. Some steps call the model.</p><div class="who">decides next step: <b>your code</b></div></div><div class="sch"><span class="m">LLM</span><i></i><span>code</span><i></i><span class="m">LLM</span></div></div>
+        <div class="row agent frag"><div class="n">3</div><div><h3>Agent</h3><p>The model picks the next action and when to stop.</p><div class="who">decides next step: <b>the model</b></div></div><div class="sch"><span class="m">LLM</span><i></i><span>tools</span><i></i><span>↺ repeat</span></div></div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s l">
+    <div class="meta"><span style="grid-column:1/span 4">02 — From model to agent</span><span style="grid-column:9/span 4;text-align:right">The loop</span></div>
+    <div class="g">
+      <h2>The agent loop</h2>
+      <ol class="steps">
+        <li><b>01</b>Your code builds the context and calls the model.</li>
+        <li><b>02</b>The model answers, or asks for a tool.</li>
+        <li><b>03</b>Your code runs the tool and adds the result.</li>
+      </ol>
+      <div class="dia">
+        <svg viewBox="0 0 960 620" width="960" height="620">
+          <defs>
+            <marker id="k" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#111"/></marker>
+            <marker id="r" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff3b1f"/></marker>
+          </defs>
+          <path d="M150 140 H266" stroke="#111" stroke-width="1.5" marker-end="url(#k)"/>
+          <path d="M520 140 H636" stroke="#111" stroke-width="1.5" marker-end="url(#k)"/>
+          <path d="M760 100 V40 H75 V96" stroke="#111" stroke-width="1.5" fill="none" marker-end="url(#k)"/>
+          <path d="M760 190 V376" stroke="#ff3b1f" stroke-width="3" marker-end="url(#r)"/>
+          <path d="M640 430 H395 V196" stroke="#ff3b1f" stroke-width="3" fill="none" marker-end="url(#r)"/>
+        </svg>
+        <div class="box" style="left:0;top:100px;width:150px"><b>User</b><small>task</small></div>
+        <div class="box" style="left:270px;top:90px;width:250px;height:104px"><b>Context</b><small>instructions + history</small></div>
+        <div class="box m" style="left:640px;top:90px;width:240px;height:104px"><b>Model</b><small>answer or tool call</small></div>
+        <div class="box" style="left:640px;top:380px;width:240px;height:104px"><b>Tools</b><small>your functions</small></div>
+        <div class="lab" style="left:160px;top:112px">message</div>
+        <div class="lab" style="left:536px;top:112px">prompt</div>
+        <div class="lab" style="left:340px;top:12px">final answer</div>
+        <div class="lab r" style="left:778px;top:276px">tool call</div>
+        <div class="lab r" style="left:420px;top:446px">tool result</div>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+</div>
+<script>
+  const st = document.getElementById('stage'), S = [...st.querySelectorAll('.s')]; let i = 0;
+  const fit = () => { const k = Math.min(innerWidth / 1600, innerHeight / 900) * .98; st.style.transform = `translate(-50%,-50%) scale(${k})`; };
+  const go = n => { i = Math.max(0, Math.min(S.length - 1, n)); S.forEach((s, j) => s.classList.toggle('on', j === i)); S[i].querySelectorAll('.pg').forEach(e => e.textContent = `${i + 1} / ${S.length}`); location.hash = i + 1; };
+  addEventListener('resize', fit);
+  const fr = () => [...S[i].querySelectorAll('.frag')];
+  const sync = () => { const sl = S[i], shown = fr().filter(e => e.classList.contains('in')), last = shown[shown.length - 1], log = sl.querySelector('.log');
+    sl.querySelectorAll('.cur').forEach(e => e.classList.remove('cur')); if (last) last.classList.add('cur');
+    if (log) log.innerHTML = last && last.dataset.log ? last.dataset.log : log.dataset.log0;
+    sl.classList.toggle('done', !!last && last.classList.contains('end')); };
+  const next = () => { const f = fr().find(e => !e.classList.contains('in')); f ? f.classList.add('in') : go(i + 1); sync(); };
+  const prev = () => { const f = fr().filter(e => e.classList.contains('in')).pop(); f ? f.classList.remove('in') : (go(i - 1), fr().forEach(e => e.classList.add('in'))); sync(); };
+  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) next(); if (['ArrowLeft', 'PageUp'].includes(e.key)) prev(); });
+  st.addEventListener('click', next);
+  fit(); go((parseInt(location.hash.slice(1)) || 1) - 1);
+</script>
+</body>
+</html>

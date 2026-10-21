@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Haris Ahmed", "email": "haris-demo@yopmail.com", "birthday": "10-21", "note": "University friend" },
+  { "id": 2, "name": "Ayesha Khan", "email": "ayesha-demo@yopmail.com", "birthday": "03-14", "note": "Works with me on client projects" },
+  { "id": 3, "name": "Bilal Raza", "email": "bilal-demo@yopmail.com", "birthday": "10-24", "note": "Cousin" },
+  { "id": 4, "name": "Sara Malik", "email": "sara-demo@yopmail.com", "birthday": "07-02", "note": "Designer, freelance" }
+]

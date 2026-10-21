@@ -1,0 +1,6 @@
+[
+  { "id": 1, "title": "Prepare slides for the AI agents lecture", "due": "2026-10-21", "done": false },
+  { "id": 2, "title": "Send invoice to Ayesha's client", "due": "2026-10-21", "done": false },
+  { "id": 3, "title": "Renew domain", "due": "2026-10-25", "done": false },
+  { "id": 4, "title": "Book dentist appointment", "due": "2026-10-18", "done": true }
+]

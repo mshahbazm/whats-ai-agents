@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept C · Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #101010; --panel: #0b0b0b; --bar: #161616; --line: #232323; --tx: #e6e6e6; --mut: #6e6e6e; --dim: #a0a0a0; --peach: #ffc799; --mint: #99ffe4; --sky: #9ecbff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #050505; font-family: 'Inter', sans-serif; color: var(--tx); }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center; overflow: hidden; background: var(--bg); display: grid; grid-template-columns: 56px 270px 1fr; grid-template-rows: 1fr 32px; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .act { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 26px; padding-top: 22px; }
+  .act i { width: 22px; height: 22px; border: 1.6px solid var(--mut); border-radius: 5px; display: block; }
+  .act i.on { border-color: var(--tx); }
+  .side { background: var(--panel); border-right: 1px solid var(--line); padding: 18px 0; font: 400 15px 'JetBrains Mono', monospace; color: var(--dim); }
+  .side h6 { font: 600 12px 'Inter'; letter-spacing: .12em; color: var(--mut); padding: 0 20px 14px; }
+  .side div { padding: 6px 20px; white-space: nowrap; }
+  .side .d { color: var(--tx); }
+  .side .f { padding-left: 44px; }
+  .side .on { background: #1d1d1d; color: var(--peach); box-shadow: inset 2px 0 0 var(--peach); }
+  .main { display: grid; grid-template-rows: 44px 34px 1fr; min-width: 0; }
+  .tabs { display: flex; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .tabs span { font: 400 14px 'JetBrains Mono', monospace; color: var(--mut); padding: 13px 22px; border-right: 1px solid var(--line); }
+  .tabs span.on { background: var(--bg); color: var(--tx); box-shadow: inset 0 2px 0 var(--peach); }
+  .crumb { font: 400 13px 'JetBrains Mono', monospace; color: var(--mut); padding: 9px 40px; }
+  .doc { position: relative; overflow: hidden; }
+  .s { position: absolute; inset: 0; padding: 30px 90px 0 40px; display: none; }
+  .s.on { display: block; }
+  .status { grid-column: 1 / -1; background: var(--panel); border-top: 1px solid var(--line); display: flex; align-items: center; gap: 26px; padding: 0 18px; font: 400 13px 'JetBrains Mono', monospace; color: var(--dim); }
+  .status .br { color: var(--peach); }
+  .status .sp { margin-left: auto; }
+
+  /* markdown preview */
+  .hm { color: var(--mut); font-weight: 400; margin-right: 18px; font-family: 'JetBrains Mono', monospace; }
+  .md h1 { font-size: 110px; font-weight: 700; letter-spacing: -4px; line-height: 1; margin: 60px 0 30px; }
+  .md h1 em { font-style: normal; color: var(--peach); }
+  .md h2 { font-size: 58px; font-weight: 700; letter-spacing: -2px; line-height: 1.05; margin: 34px 0 34px; }
+  .md p { font-size: 27px; line-height: 1.5; color: var(--dim); max-width: 980px; }
+  .md blockquote { margin-top: 40px; border-left: 3px solid var(--line); padding-left: 24px; font-size: 22px; color: var(--mut); }
+  .md blockquote b { color: var(--tx); font-weight: 600; }
+  .todo { list-style: none; margin-top: 46px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 60px; max-width: 1000px; font: 400 20px 'JetBrains Mono', monospace; color: var(--dim); }
+  .todo li span { color: var(--mut); }
+  .todo li b { color: var(--mint); font-weight: 400; }
+  table.md-t { border-collapse: collapse; font: 400 21px 'JetBrains Mono', monospace; width: 1120px; }
+  .md-t th { text-align: left; color: var(--mut); font-weight: 500; padding: 14px 22px; border-bottom: 1px solid #333; }
+  .md-t td { padding: 22px; border-bottom: 1px solid var(--line); color: var(--dim); vertical-align: top; }
+  .md-t td:first-child { color: var(--tx); font-weight: 600; white-space: nowrap; }
+  .md-t tr.hot td { background: rgba(255, 199, 153, .07); }
+  .md-t tr.hot td:first-child { color: var(--peach); box-shadow: inset 3px 0 0 var(--peach); }
+  .md-t code { color: var(--sky); }
+  .md-t .who { color: var(--peach); }
+  .ascii { font: 500 24px/1.42 'JetBrains Mono', monospace; color: var(--mut); white-space: pre; margin-top: 10px; }
+  .ascii .n { color: var(--tx); font-weight: 700; }
+  .ascii .m { color: var(--peach); font-weight: 700; }
+  .ascii .l { color: var(--mint); }
+  .ascii .c { color: #555; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <nav class="act"><i class="on"></i><i></i><i></i><i></i></nav>
+  <aside class="side">
+    <h6>LECTURE</h6>
+    <div class="d">▾ building-ai-agents</div>
+    <div class="f" data-f="0">README.md</div>
+    <div class="f">01_llms/</div>
+    <div class="f d">02_agents/</div>
+    <div class="f" data-f="1" style="padding-left:68px">what_is_an_agent.md</div>
+    <div class="f" data-f="2" style="padding-left:68px">the_loop.txt</div>
+    <div class="f">03_tools/</div>
+    <div class="f">04_frameworks/</div>
+    <div class="f">05_responsible_ai/</div>
+    <div class="f">06_live_build/</div>
+  </aside>
+  <main class="main">
+    <div class="tabs" id="tabs"></div>
+    <div class="crumb" id="crumb"></div>
+    <div class="doc">
+
+      <section class="s md" data-file="README.md" data-path="building-ai-agents › README.md">
+        <h1><span class="hm">#</span>Building<br>AI agents<em>_</em></h1>
+        <p>From a language model to a system that can act. Six parts, seven live experiments, one agent built from scratch.</p>
+        <ul class="todo">
+          <li><span>- [ ]</span> 01 <b>LLMs</b></li>
+          <li><span>- [ ]</span> 04 <b>Frameworks</b></li>
+          <li><span>- [ ]</span> 02 <b>Agent architecture</b></li>
+          <li><span>- [ ]</span> 05 <b>Responsible AI</b></li>
+          <li><span>- [ ]</span> 03 <b>Tool calling</b></li>
+          <li><span>- [ ]</span> 06 <b>Live build</b></li>
+        </ul>
+        <blockquote><b>Shahbaz Manzoor</b> · Software Engineer, AI products &amp; agents · University Name</blockquote>
+      </section>
+
+      <section class="s md" data-file="what_is_an_agent.md" data-path="building-ai-agents › 02_agents › what_is_an_agent.md">
+        <h2><span class="hm">##</span>Who decides what happens next?</h2>
+        <table class="md-t">
+          <tr><th>pattern</th><th>flow</th><th>next step decided by</th></tr>
+          <tr><td>LLM call</td><td><code>input → llm → output</code><br>One request, one response.</td><td>nobody</td></tr>
+          <tr><td>Workflow</td><td><code>llm → code → llm → …</code><br>Fixed steps. Some call the model.</td><td>your code</td></tr>
+          <tr class="hot"><td>Agent</td><td><code>llm ⇄ tools, repeat</code><br>Picks the next action and when to stop.</td><td class="who">the model</td></tr>
+        </table>
+        <p style="margin-top:40px;font-size:24px">Use the simplest one that works. Agents trade predictability for flexibility.</p>
+      </section>
+
+      <section class="s md" data-file="the_loop.txt" data-path="building-ai-agents › 02_agents › the_loop.txt">
+        <h2><span class="hm">##</span>The agent loop</h2>
+<div class="ascii">                        <span class="c">final answer</span>
+   ┌──────────────────────────────────────────────────────────┐
+   ▼                                                          │
+<span class="n">┌──────┐</span>  message   <span class="n">┌───────────────┐</span>   prompt   <span class="m">┌────────────┐</span>
+<span class="n">│ user │</span> ─────────▶ <span class="n">│    context    │</span> ─────────▶ <span class="m">│   model    │</span>
+<span class="n">└──────┘</span>            <span class="n">│ instructions  │</span>            <span class="m">│ answer, or │</span>
+                    <span class="n">│ + history     │</span>            <span class="m">│ tool call? │</span>
+                    <span class="n">└───────────────┘</span>            <span class="m">└─────┬──────┘</span>
+                            <span class="l">▲</span>                           <span class="l">│ tool call</span>
+                            <span class="l">│</span>       tool result         <span class="n">┌─────▼──────┐</span>
+                            <span class="l">└──────────────────────────</span> <span class="n">│   tools    │</span>
+                                                        <span class="n">└────────────┘</span></div>
+      </section>
+
+    </div>
+  </main>
+  <footer class="status"><span class="br">⎇ 02-memory</span><span>Part 2 of 6 · Agent architecture</span><span class="sp" id="pos"></span><span>UTF-8</span><span>Python 3.12</span></footer>
+</div>
+<script>
+  const st = document.getElementById('stage'), S = [...st.querySelectorAll('.s')]; let i = 0;
+  const fit = () => { const k = Math.min(innerWidth / 1600, innerHeight / 900) * .98; st.style.transform = `translate(-50%,-50%) scale(${k})`; };
+  const go = n => {
+    i = Math.max(0, Math.min(S.length - 1, n));
+    S.forEach((s, j) => s.classList.toggle('on', j === i));
+    document.getElementById('tabs').innerHTML = S.slice(0, i + 1).map((s, j) => `<span class="${j === i ? 'on' : ''}">${s.dataset.file}</span>`).join('');
+    document.getElementById('crumb').textContent = S[i].dataset.path;
+    document.querySelectorAll('.side [data-f]').forEach(e => e.classList.toggle('on', +e.dataset.f === i));
+    document.getElementById('pos').textContent = `slide ${i + 1} / ${S.length}`;
+    location.hash = i + 1;
+  };
+  addEventListener('resize', fit);
+  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) go(i + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(i - 1); });
+  st.addEventListener('click', () => go(i + 1));
+  fit(); go((parseInt(location.hash.slice(1)) || 1) - 1);
+</script>
+</body>
+</html>
