@@ -10,8 +10,10 @@ import {
   type ThreadAssistantMessagePart,
 } from "@assistant-ui/react";
 import type { ToolCallMessagePartProps } from "@assistant-ui/react";
+import { MarkdownTextPrimitive } from "@assistant-ui/react-markdown";
 import { Collapsible } from "@base-ui/react/collapsible";
 import { ArrowUp, ChevronRight, LoaderCircle, Square, Wrench } from "lucide-react";
+import remarkGfm from "remark-gfm";
 
 type ToolPart = Extract<ThreadAssistantMessagePart, { type: "tool-call" }>;
 
@@ -107,12 +109,16 @@ function UserMessage() {
   );
 }
 
+function MarkdownText() {
+  return <MarkdownTextPrimitive remarkPlugins={[remarkGfm]} className="md" />;
+}
+
 function AssistantMessage() {
   return (
     <MessagePrimitive.Root className="py-3">
       <MessagePrimitive.Parts
         components={{
-          Text: ({ text }) => <p className="whitespace-pre-wrap leading-7">{text}</p>,
+          Text: MarkdownText,
           tools: { Fallback: ToolCard },
         }}
       />
