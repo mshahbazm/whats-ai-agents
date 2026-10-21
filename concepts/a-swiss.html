@@ -800,7 +800,7 @@ When he asks you to send a message, write a clear subject and a short, friendly 
   </section>
 
   <section class="s">
-    <div class="meta"><span style="grid-column:1/span 4">04 — Memory &amp; context</span><span style="grid-column:9/span 4;text-align:right">Skills</span></div>
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory &amp; context</span><span style="grid-column:9/span 4;text-align:right">Instructions</span></div>
     <div class="ctr">
       <h2 class="a" style="font-size:76px">One huge system prompt doesn’t scale.</h2>
       <div class="tools" style="grid-template-columns:repeat(2,1fr);width:1150px">
@@ -812,17 +812,17 @@ When he asks you to send a message, write a clear subject and a short, friendly 
   </section>
 
   <section class="s">
-    <div class="meta"><span style="grid-column:1/span 4">04 — Memory &amp; context</span><span style="grid-column:9/span 4;text-align:right">Skills</span></div>
+    <div class="meta"><span style="grid-column:1/span 4">04 — Memory &amp; context</span><span style="grid-column:9/span 4;text-align:right">Instructions</span></div>
     <div class="ctr">
       <h2 class="a">Load instructions only when needed.</h2>
       <div class="pair2">
-        <div><small class="kick">Always in the system prompt</small><div class="code">Skills you can use:
+        <div><small class="kick">Always in the system prompt</small><div class="code">Instructions you can load:
 - plan-event: plan an event
   step by step
 - send-invoice: prepare and
   send an invoice
 - write-email: Shahbaz's style</div></div>
-        <div class="frag"><small class="kick">Loaded when the task needs it</small><div class="code"><span class="r">read_skill("plan-event")</span>
+        <div class="frag"><small class="kick">Loaded when the task needs it</small><div class="code"><span class="r">load_instructions("plan-event")</span>
 
 1. Find a free day first.
 2. Confirm the guest list with
