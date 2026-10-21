@@ -43,8 +43,7 @@ Open <http://localhost:3000>.
 | `OPENAI_API_KEY` | OpenAI API key |
 | `OPENAI_MODEL` | Any chat model that supports tool calling |
 | `RESEND_API_KEY` | [Resend](https://resend.com) API key, for sending email |
-| `EMAIL_FROM` | Sender address on a domain verified in Resend |
-| `ALLOWED_EMAIL_DOMAIN` | Optional safety net: only send to this domain (the demo contacts use `yopmail.com`). Leave empty to allow any address |
+| `FROM_ADDRESS` | Sender address on a domain verified in Resend |
 | `MAX_STEPS` | Stop the loop after this many model calls |
 | `TIMEZONE` | Used by `get_today` |
 | `REMEMBER_CONVERSATION` | `false` (default): every message starts blank, which the lecture uses to show why agents need memory. `true`: the whole chat is sent each time |

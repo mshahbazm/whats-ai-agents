@@ -140,20 +140,15 @@ const tools: Record<string, (args: Args) => Promise<unknown>> = {
   },
 
   async send_email({ to, subject, body }) {
-    const recipient = String(to);
-    const allowed = process.env.ALLOWED_EMAIL_DOMAIN?.trim();
-    if (allowed && !recipient.toLowerCase().endsWith(`@${allowed.toLowerCase()}`)) {
-      return { error: `Blocked: this demo only sends to @${allowed} addresses.` };
-    }
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM!,
-      to: recipient,
+      from: process.env.FROM_ADDRESS!,
+      to: String(to),
       subject: String(subject),
       text: String(body),
     });
     if (error) return { error: error.message };
-    return { sent: true, id: data?.id, to: recipient };
+    return { sent: true, id: data?.id, to };
   },
 
   async list_todos({ status = "pending" }) {
