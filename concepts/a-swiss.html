@@ -164,6 +164,14 @@
   .react b { font: 500 18px 'IBM Plex Mono', monospace; color: var(--grey); }
   .react span { font-size: 30px; font-weight: 600; letter-spacing: -.6px; }
   .react code { font: 500 26px 'IBM Plex Mono', monospace; color: var(--red); }
+  .mcp { display: flex; align-items: center; margin-top: 64px; }
+  .mcp .agent { background: var(--ink); color: #fff; font-size: 34px; font-weight: 800; letter-spacing: -1px; padding: 40px 44px; }
+  .mcp .wire { width: 200px; height: 3px; background: var(--red); position: relative; }
+  .mcp .wire span { position: absolute; left: 50%; top: -40px; transform: translateX(-50%); font: 500 20px 'IBM Plex Mono', monospace; color: var(--red); }
+  .mcp .servers { display: grid; grid-template-columns: repeat(2, 300px); gap: 14px; text-align: left; }
+  .mcp .servers div { background: #f4f4f4; padding: 18px 22px; }
+  .mcp .servers b { display: block; font-size: 26px; font-weight: 700; letter-spacing: -.5px; }
+  .mcp .servers small { font: 500 15px 'IBM Plex Mono', monospace; color: var(--grey); }
 </style>
 </head>
 <body>
@@ -569,6 +577,26 @@ while True:
         <div class="frag"><code>Take action</code><span>Send an email, post to Slack, book a meeting. Our send_email calls Resend’s API.</span></div>
         <div class="frag"><code>Run code</code><span>A calculator, a Python script, a web search, even a browser.</span></div>
       </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">03 — Tools</span><span style="grid-column:9/span 4;text-align:right">Look up later</span></div>
+    <div class="ctr">
+      <small class="kick">Worth looking up later</small>
+      <h2 class="a">MCP: tools someone already built.</h2>
+      <div class="mcp">
+        <div class="agent">Our agent</div>
+        <div class="wire"><span>MCP</span></div>
+        <div class="servers">
+          <div><b>Gmail</b><small>send_email, search_inbox</small></div>
+          <div><b>GitHub</b><small>create_issue, read_file</small></div>
+          <div><b>Calendar</b><small>list_events, book_slot</small></div>
+          <div><b>Notion</b><small>search_pages, add_page</small></div>
+        </div>
+      </div>
+      <p class="sub">Model Context Protocol: one standard plug, so any agent can use tools from Gmail, GitHub and more, without writing them yourself.</p>
     </div>
     <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
