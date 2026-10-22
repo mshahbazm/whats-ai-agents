@@ -200,6 +200,11 @@
   .check div { display: grid; grid-template-columns: 70px 1fr; padding: 10px 0; align-items: baseline; }
   .check b { font: 500 18px 'IBM Plex Mono', monospace; color: var(--red); }
   .check span { font-size: 32px; font-weight: 600; letter-spacing: -.6px; }
+  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 56px; width: 1250px; }
+  .projects a { display: block; background: #f4f4f4; padding: 30px 34px; text-align: left; color: var(--ink); text-decoration: none; transition: background .15s; }
+  .projects a:hover { background: #ebebeb; }
+  .projects b { display: block; font: 500 28px 'IBM Plex Mono', monospace; color: var(--red); }
+  .projects span { display: block; margin-top: 12px; font-size: 24px; line-height: 1.4; color: #444; }
 </style>
 </head>
 <body>
@@ -210,6 +215,20 @@
     <div class="disc"><i>while True:<br>&nbsp;&nbsp;reply = llm(messages, tools)<br>&nbsp;&nbsp;if not reply.tool_calls:<br>&nbsp;&nbsp;&nbsp;&nbsp;return reply<br>&nbsp;&nbsp;messages += run(reply)</i></div>
     <h1>Building<br>AI agents<span>.</span></h1>
     <div class="foot"><span style="grid-column:1/span 4">Shahbaz Manzoor</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
+  </section>
+
+  <section class="s">
+    <div class="meta"><span style="grid-column:1/span 4">About me</span><span style="grid-column:9/span 4;text-align:right">Hello</span></div>
+    <div class="ctr">
+      <small class="kick">About me</small>
+      <h2 class="word" style="font-size:150px;letter-spacing:-7px">Shahbaz Manzoor</h2>
+      <p class="sub">Software engineer building AI products and agents. Two recent ones:</p>
+      <div class="projects">
+        <a href="https://airbasehq.com" target="_blank" rel="noopener noreferrer"><b>airbasehq.com ↗</b><span>An AI that interviews every job candidate over video and phone, and hands back a ranked shortlist.</span></a>
+        <a href="https://scnz.app" target="_blank" rel="noopener noreferrer"><b>scnz.app ↗</b><span>Write a script, and an AI director turns it into a finished video.</span></a>
+      </div>
+    </div>
+    <div class="foot"><span style="grid-column:1/span 4">Building AI agents</span><span style="grid-column:10/span 3;text-align:right" class="pg"></span></div>
   </section>
 
     <section class="s">
@@ -1498,7 +1517,8 @@ const contacts = await store.load("contacts");
     if (e.key === 'Home') { go(0); sync(); }
     if (e.key === 'End') { go(S.length - 1); sync(); }
   });
-  st.addEventListener('click', next);
+  // Clicking a link opens it; any other click moves to the next step.
+  st.addEventListener('click', e => { if (!e.target.closest('a')) next(); });
   fit(); go((parseInt(location.hash.slice(1)) || 1) - 1);
 </script>
 </body>
